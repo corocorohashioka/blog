@@ -7,13 +7,6 @@
     "text": "About this blog"
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "2026年に読んだ本",
-    "section": "",
-    "text": "2026年に読んだ本を箇条書きベースで並べる。全ての本を完読している訳ではないので注意。 詳しい感想をここには記さないが、感想が書きたくなった本はその都度別ページで感想を書こうと思う。カテゴリで分割する。\n\n\nダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史』鬼澤忍・塩原通緒訳、早川書房、2023年。"
-  },
-  {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
     "title": "Post With Code",
@@ -21,17 +14,24 @@
     "text": "This is a post with executable code."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "blog",
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "2026年に読んだ本",
     "section": "",
-    "text": "Post With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 8, 2026\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\n2026年に読んだ本\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 5, 2026\n\n\ncorocorohashioka\n\n\n\n\n\nNo matching items"
+    "text": "2026年に読んだ本を箇条書きベースで並べる。全ての本を完読している訳ではないので注意。 詳しい感想をここには記さないが、感想が書きたくなった本はその都度別ページで感想を書こうと思う。カテゴリで分割する。\n\n\nダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史　上』鬼澤忍・塩原通緒訳、早川書房、2023年。"
   },
   {
     "objectID": "posts/welcome/index.html#経済学",
     "href": "posts/welcome/index.html#経済学",
     "title": "2026年に読んだ本",
     "section": "",
-    "text": "ダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史』鬼澤忍・塩原通緒訳、早川書房、2023年。"
+    "text": "ダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史　上』鬼澤忍・塩原通緒訳、早川書房、2023年。"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "blog",
+    "section": "",
+    "text": "Post With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 8, 2026\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\n2026年に読んだ本\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 5, 2026\n\n\ncorocorohashioka\n\n\n\n\n\nNo matching items"
   }
 ]
