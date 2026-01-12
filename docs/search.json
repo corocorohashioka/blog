@@ -32,6 +32,41 @@
     "href": "index.html",
     "title": "blog",
     "section": "",
-    "text": "Post With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 8, 2026\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\n2026年に読んだ本\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 5, 2026\n\n\ncorocorohashioka\n\n\n\n\n\nNo matching items"
+    "text": "2025年秋御嶽山\n\n\n\nmountain\n\n\n\n\n\n\n\n\n\nJan 12, 2026\n\n\ncorocorohashioka\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 8, 2026\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\n2026年に読んだ本\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 5, 2026\n\n\ncorocorohashioka\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/2026-articles/0112_ontake/index.html",
+    "href": "posts/2026-articles/0112_ontake/index.html",
+    "title": "2025年秋御嶽山",
+    "section": "",
+    "text": "2025年10月に御嶽山に登ってきた。その山行計画時に作成したファイルを使って、地理情報がquarto websiteにどのように反映されるのか検証する。"
+  },
+  {
+    "objectID": "posts/2026-articles/0112_ontake/index.html#御嶽山の登山ルート",
+    "href": "posts/2026-articles/0112_ontake/index.html#御嶽山の登山ルート",
+    "title": "2025年秋御嶽山",
+    "section": "御嶽山の登山ルート",
+    "text": "御嶽山の登山ルート\n出発は木曽福島駅、登山口は王滝口、山頂は剣ヶ峰、下山は濁河温泉口、帰りは飛騨小坂駅とした。以下の地図は、GPXファイルから読み込んだ登山ルート（線データ）、通過する自治体（面データ）、および主要なポイント（点データ）を表示している。登山道の一部に高山市が含まれていることがポイント。"
+  },
+  {
+    "objectID": "posts/2026-articles/0112_ontake/index.html#御嶽山の標高プロファイル",
+    "href": "posts/2026-articles/0112_ontake/index.html#御嶽山の標高プロファイル",
+    "title": "2025年秋御嶽山",
+    "section": "御嶽山の標高プロファイル",
+    "text": "御嶽山の標高プロファイル\n御嶽山の登山ルートに沿った標高プロファイルを作成した。以下のグラフは、横軸に距離（km）、縦軸に標高（m）を示している。登山口から山頂までの距離は約3.4km、標高差は約800mであることがわかる。"
+  },
+  {
+    "objectID": "posts/2026-articles/post-with-code/index.html",
+    "href": "posts/2026-articles/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "posts/2026-articles/welcome/index.html",
+    "href": "posts/2026-articles/welcome/index.html",
+    "title": "2026年に読んだ本",
+    "section": "",
+    "text": "このページについて\n2026年に読んだ本を箇条書きベースで並べる。全ての本を完読している訳ではないので注意。 詳しい感想をここには記さないが、感想が書きたくなった本はその都度別ページで感想を書こうと思う。\nダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史　上』鬼澤忍・塩原通緒訳、早川書房、2023年。"
   }
 ]

@@ -1,0 +1,115 @@
+---
+title: "2025年秋御嶽山"
+author: "corocorohashioka"
+date: "2026-01-12"
+categories: [mountain]
+execute: 
+  echo: false
+  warning: false
+---
+
+2025年10月に御嶽山に登ってきた。その山行計画時に作成したファイルを使って、地理情報がquarto websiteにどのように反映されるのか検証する。
+
+```{r}
+#| output: false
+library(sf)
+library(mapview)
+library(tidyverse)
+library(geosphere)
+library(ggplot2)
+library(plotly)
+```
+
+## 御嶽山の登山ルート
+出発は木曽福島駅、登山口は王滝口、山頂は剣ヶ峰、下山は濁河温泉口、帰りは飛騨小坂駅とした。以下の地図は、GPXファイルから読み込んだ登山ルート（線データ）、通過する自治体（面データ）、および主要なポイント（点データ）を表示している。登山道の一部に高山市が含まれていることがポイント。
+```{r}
+line_data <- read_sf("/Volumes/ASADA/others/gpx_map/202510ontake/Ontake.gpx",layer = "tracks")
+shichoson_geo <- read_sf("/Volumes/ASADA/others/shichoson/2019_isna/2019_summary_isna.shp")
+point <-read_sf("/Volumes/ASADA/others/gpx_map/202510ontake/ontake_point.geojson")
+line_data <- st_transform(line_data, st_crs(shichoson_geo))
+point <- st_transform(point, st_crs(shichoson_geo))
+point$name <- c("木曽福島駅","セブンイレブン木曽福島店","おんたけ高原温泉こもれびの湯", "道の駅木曽福島", "道の駅三岳", "御嶽山ビジターセンターやまテラス王滝", "展望台（東屋）","御嶽神社（王滝）遥拝所", "御嶽山王滝頂上(剣ヶ峰)","濁河温泉","ひめじゃがの湯","道の駅南飛騨小坂はなもも", "飛騨小坂駅")
+intersections <- st_intersects(shichoson_geo, line_data, sparse = FALSE) %>% which(. == TRUE)
+shichoson_geo <- shichoson_geo[intersections, ]
+mapview(
+  shichoson_geo,
+  popup = NA,
+  label = shichoson_geo$N03_004,
+  legend = FALSE,
+  col.regions = NA,
+  alpha.regions = 0.3,
+  color = "orange",
+  lwd = 2.5,
+  highlight = FALSE,
+  map.types = "OpenStreetMap"
+) +
+mapview(
+  line_data,
+  label = NA,
+  legend = FALSE,
+  lwd = 3,
+  map.types = "OpenStreetMap"         
+) +
+mapview(
+  point,
+  popup = NA,
+  label = point$name,
+  legend = FALSE,
+  color = "black", # 点の色
+  cex = 7,
+  map.types = "OpenStreetMap"          
+)
+```
+
+## 御嶽山の標高プロファイル
+御嶽山の登山ルートに沿った標高プロファイルを作成した。以下のグラフは、横軸に距離（km）、縦軸に標高（m）を示している。登山口から山頂までの距離は約3.4km、標高差は約800mであることがわかる。
+```{r}
+# GPX のトラックポイントを読み込む
+track_points <- read_sf("/Volumes/ASADA/others/gpx_map/202510ontake/Ontake.gpx",
+                        layer = "track_points")
+
+track_points <- track_points %>%
+  mutate(lon = st_coordinates(.)[,1],
+         lat = st_coordinates(.)[,2]) %>%
+  mutate(dist = geosphere::distGeo(cbind(lon, lat), 
+                                   cbind(lag(lon), lag(lat)))) %>%
+  mutate(dist = ifelse(is.na(dist), 0, dist)) %>%
+  mutate(cumdist = cumsum(dist))
+
+track_points <- track_points %>%
+  mutate(cumdist_km = cumdist / 1000,
+         section = case_when(
+           cumdist_km >= 40.5 & cumdist_km <= 50   ~ "highlight1",
+           TRUE ~ "normal"
+         ))
+
+p <- ggplot(track_points, aes(x = cumdist_km, y = ele)) + 
+  geom_line(color = "steelblue") +  # 元の線（青）
+  geom_line(data = filter(track_points, section != "normal"),
+            aes(x = cumdist_km, y = ele, color = section, group = section),
+            size = 0.8) +             # ハイライト部分を重ねる
+  scale_color_manual(values = c("highlight1" = "red")) +
+  
+  # 注釈
+  annotate("point", x = 40.5, y = 2200, color = "orange", size = 3) +
+  annotate("text", x = 30, y = 2300, label = "御嶽山ビジターセンター\nやまテラス王滝",
+           hjust = 0.5, color = "black", size = 3) +
+  annotate("point", x = 43.9, y = 3067, color = "orange", size = 3) +
+  annotate("text", x = 43.9, y = 3181, label = "王滝頂上(剣ヶ峰)",
+           hjust = 0.5, color = "black", size = 3) +
+  annotate("point", x = 50, y = 1811, color = "orange", size = 3) +
+  annotate("text", x = 55, y = 1811, label = "濁河温泉",
+           hjust = 0.5, color = "black", size = 3) +
+  
+  labs(x = "Distance (km)", y = "Elevation (m)", title = "Elevation Profile for Mt.Ontake") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplotly(p, tooltip = c("x", "y")) %>%
+  config(
+    scrollZoom = "reset",          # マウススクロールでのズーム無効
+    doubleClick = "reset",         # ダブルクリック無効
+    displayModeBar = TRUE,       # ツールバーは残す（必要に応じて）
+    modeBarButtonsToRemove = c("zoom2d", "pan2d", "select2d", "lasso2d") # ズーム関連ボタン削除
+  )
+```
