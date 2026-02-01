@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="corocorohashioka">
+<meta name="dcterms.date" content="2026-01-12">
+
+<title>個人固定効果の推定 – blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">個人固定効果の推定</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">econometrics</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>corocorohashioka </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 12, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="はじめに" class="level1">
+<h1>はじめに</h1>
+<p>計量経済学ではよく固定効果分析が行われる。具体的には、固定効果は時間不変の固定効果やグループ内固定効果を含んだ分析が存在するが、これらを推計するための大原則として、一つのグループに複数のobservationが存在することが挙げられる。例えば、時間不変な固定効果を含む分析では、個人<span class="math inline">\(i\)</span>に対して<span class="math inline">\(T\)</span>期分のobservationが存在する。また、グループ内固定効果についてもグループ（クラスタとよく呼ばれる）内には複数のobservationが存在する。では、もしグループ内にobservationが一つしか存在しない場合、推計は行うことができるのか。本記事では、クロスセクションデータにおいて、グループ内のobservation数を調整することで考察する。</p>
+</section>
+<section id="理論" class="level1">
+<h1>理論</h1>
+<p>グループ固定効果を含むモデルは以下のように示される。 <span class="math display">\[
+\begin{aligned}
+&amp;y = X\beta + D\alpha + u　\\
+&amp;u \sim N(0,\sigma^2I)
+\end{aligned}
+\]</span></p>
+<p>この場合、FWL定理より、<span class="math inline">\(β\)</span>の推計値は以下のように示される。 <span class="math display">\[
+\begin{aligned}
+&amp;\hat{\beta} = (X^{\prime}M_DX)^{-1}X^{\prime}M_Dy \\
+&amp;M_D = I-D(D^{\prime}D)D^{\prime}
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(M_D\)</span>はグループ内平均との差分行列であり、例えば、<span class="math inline">\(X^{\prime}M_DX\)</span>を要素で表すと、以下のようになる。 <span class="math display">\[
+X^{\prime}M_DX = \sum_g^G\sum_{i\in{g}}(x_i-\bar{x}_g)(x_i-\bar{x}_g)^{\prime}
+\]</span></p>
+<p>もし、グループ内にobservationが一つしかない場合、<span class="math inline">\(x_i-\bar{x}_g\)</span>が0となるので、識別ができなくなる。</p>
+<p>これをシミュレーションで回してみる。</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>within <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>group_id <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">seq</span>(<span class="dv">1</span>, N<span class="sc">/</span>within, <span class="dv">1</span>), <span class="at">each =</span> within)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>indi <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">3</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> x <span class="sc">+</span> indi <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>N, <span class="at">y =</span> y, <span class="at">x =</span> x)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>まず、固定効果を含めない回帰分析の結果を確認する。</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model<span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2235 -0.9406 -0.0165  0.8777  5.0801 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.06506    0.08763   12.15   &lt;2e-16 ***
+x            2.00253    0.05040   39.73   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.371 on 998 degrees of freedom
+Multiple R-squared:  0.6127,    Adjusted R-squared:  0.6123 
+F-statistic:  1579 on 1 and 998 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>結果は切片とxの係数共に設定した係数と同じになっている。これは、indiとxが独立であるため、推定モデルからindiを欠落させても欠落変数バイアスが発生しないためである。</p>
+<p>次に、固定効果を含めた推計を行う。</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model_fe <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> id, <span class="at">data =</span> data)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_fe)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x + id, data = data)
+
+Residuals:
+ALL 1000 residuals are 0: no residual degrees of freedom!
+
+Coefficients: (1 not defined because of singularities)
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  6.202813        NaN     NaN      NaN
+x           -1.461383        NaN     NaN      NaN
+id2          1.388400        NaN     NaN      NaN
+id3         -1.321067        NaN     NaN      NaN
+id4          1.570022        NaN     NaN      NaN
+id5          1.470904        NaN     NaN      NaN
+id6          1.068941        NaN     NaN      NaN
+id7          0.609950        NaN     NaN      NaN
+id8          0.814551        NaN     NaN      NaN
+id9          3.500416        NaN     NaN      NaN
+id10         1.178703        NaN     NaN      NaN
+id11        -5.509070        NaN     NaN      NaN
+id12        -2.512312        NaN     NaN      NaN
+id13         6.072836        NaN     NaN      NaN
+id14        -1.692755        NaN     NaN      NaN
+id15        -2.004913        NaN     NaN      NaN
+id16         2.707485        NaN     NaN      NaN
+id17        -3.536302        NaN     NaN      NaN
+id18        -1.272295        NaN     NaN      NaN
+id19        -2.362752        NaN     NaN      NaN
+id20         1.481109        NaN     NaN      NaN
+id21        -0.588651        NaN     NaN      NaN
+id22         0.858039        NaN     NaN      NaN
+id23        -3.108960        NaN     NaN      NaN
+id24         6.283671        NaN     NaN      NaN
+id25        -1.872789        NaN     NaN      NaN
+id26         4.209759        NaN     NaN      NaN
+id27         6.156556        NaN     NaN      NaN
+id28        -4.493706        NaN     NaN      NaN
+id29         1.920464        NaN     NaN      NaN
+id30         4.911326        NaN     NaN      NaN
+id31        -6.391418        NaN     NaN      NaN
+id32        -4.954987        NaN     NaN      NaN
+id33         5.184478        NaN     NaN      NaN
+id34         0.617184        NaN     NaN      NaN
+id35         4.115863        NaN     NaN      NaN
+id36        -2.054516        NaN     NaN      NaN
+id37        -0.218876        NaN     NaN      NaN
+id38         1.181965        NaN     NaN      NaN
+id39         1.740638        NaN     NaN      NaN
+id40        -0.746249        NaN     NaN      NaN
+id41        -1.839018        NaN     NaN      NaN
+id42        -5.049683        NaN     NaN      NaN
+id43         1.690676        NaN     NaN      NaN
+id44        -0.759110        NaN     NaN      NaN
+id45        -3.316869        NaN     NaN      NaN
+id46         2.645570        NaN     NaN      NaN
+id47        -2.853545        NaN     NaN      NaN
+id48        -4.823027        NaN     NaN      NaN
+id49         3.033657        NaN     NaN      NaN
+id50        -3.143854        NaN     NaN      NaN
+id51         1.498928        NaN     NaN      NaN
+id52         1.102746        NaN     NaN      NaN
+id53        -4.700755        NaN     NaN      NaN
+id54        -5.789206        NaN     NaN      NaN
+id55         2.118823        NaN     NaN      NaN
+id56        -0.290207        NaN     NaN      NaN
+id57        -1.369706        NaN     NaN      NaN
+id58         1.881230        NaN     NaN      NaN
+id59        -4.226309        NaN     NaN      NaN
+id60         2.456419        NaN     NaN      NaN
+id61         3.466653        NaN     NaN      NaN
+id62        -3.858578        NaN     NaN      NaN
+id63         0.772582        NaN     NaN      NaN
+id64         2.051260        NaN     NaN      NaN
+id65        -1.340569        NaN     NaN      NaN
+id66        -1.649750        NaN     NaN      NaN
+id67        -6.201468        NaN     NaN      NaN
+id68         1.057947        NaN     NaN      NaN
+id69        -1.930055        NaN     NaN      NaN
+id70        -1.046899        NaN     NaN      NaN
+id71         4.489738        NaN     NaN      NaN
+id72        -2.796049        NaN     NaN      NaN
+id73        -6.638184        NaN     NaN      NaN
+id74        -5.881125        NaN     NaN      NaN
+id75        -1.892032        NaN     NaN      NaN
+id76         4.195591        NaN     NaN      NaN
+id77        -5.531189        NaN     NaN      NaN
+id78        -0.064004        NaN     NaN      NaN
+id79        -1.840114        NaN     NaN      NaN
+id80        -0.333478        NaN     NaN      NaN
+id81         0.815197        NaN     NaN      NaN
+id82        -2.117594        NaN     NaN      NaN
+id83        -1.915695        NaN     NaN      NaN
+id84        -0.298763        NaN     NaN      NaN
+id85        -4.497698        NaN     NaN      NaN
+id86         0.460946        NaN     NaN      NaN
+id87         2.160072        NaN     NaN      NaN
+id88         4.329064        NaN     NaN      NaN
+id89        -7.280927        NaN     NaN      NaN
+id90         0.047734        NaN     NaN      NaN
+id91        -2.585439        NaN     NaN      NaN
+id92        -1.846688        NaN     NaN      NaN
+id93        -2.047280        NaN     NaN      NaN
+id94         0.993037        NaN     NaN      NaN
+id95         5.048441        NaN     NaN      NaN
+id96        -7.310536        NaN     NaN      NaN
+id97         5.145856        NaN     NaN      NaN
+id98        -1.944434        NaN     NaN      NaN
+id99         2.784964        NaN     NaN      NaN
+id100       -0.227486        NaN     NaN      NaN
+id101       -2.631713        NaN     NaN      NaN
+id102        3.511885        NaN     NaN      NaN
+id103        4.102650        NaN     NaN      NaN
+id104        5.912717        NaN     NaN      NaN
+id105       -1.177132        NaN     NaN      NaN
+id106        0.589602        NaN     NaN      NaN
+id107       -0.924079        NaN     NaN      NaN
+id108       -0.368626        NaN     NaN      NaN
+id109        4.252233        NaN     NaN      NaN
+id110       -1.245927        NaN     NaN      NaN
+id111        2.458796        NaN     NaN      NaN
+id112       -2.316060        NaN     NaN      NaN
+id113       -5.705241        NaN     NaN      NaN
+id114        2.415984        NaN     NaN      NaN
+id115       -0.528371        NaN     NaN      NaN
+id116        1.225613        NaN     NaN      NaN
+id117       -2.957527        NaN     NaN      NaN
+id118       -3.718753        NaN     NaN      NaN
+id119        0.631843        NaN     NaN      NaN
+id120        1.716546        NaN     NaN      NaN
+id121        6.245285        NaN     NaN      NaN
+id122       -1.104950        NaN     NaN      NaN
+id123        4.861660        NaN     NaN      NaN
+id124        2.889432        NaN     NaN      NaN
+id125       -1.194329        NaN     NaN      NaN
+id126        1.338040        NaN     NaN      NaN
+id127        2.712645        NaN     NaN      NaN
+id128       -1.298158        NaN     NaN      NaN
+id129       -5.627601        NaN     NaN      NaN
+id130       -1.119882        NaN     NaN      NaN
+id131        1.173186        NaN     NaN      NaN
+id132       -2.430035        NaN     NaN      NaN
+id133       -1.040572        NaN     NaN      NaN
+id134        2.242625        NaN     NaN      NaN
+id135       -5.338501        NaN     NaN      NaN
+id136       -2.528519        NaN     NaN      NaN
+id137        3.674370        NaN     NaN      NaN
+id138       -5.242255        NaN     NaN      NaN
+id139        0.964703        NaN     NaN      NaN
+id140       -2.132234        NaN     NaN      NaN
+id141        4.299951        NaN     NaN      NaN
+id142        5.235275        NaN     NaN      NaN
+id143       -0.161498        NaN     NaN      NaN
+id144        3.109646        NaN     NaN      NaN
+id145        3.782526        NaN     NaN      NaN
+id146       -3.658137        NaN     NaN      NaN
+id147        3.649581        NaN     NaN      NaN
+id148        5.755116        NaN     NaN      NaN
+id149        0.741865        NaN     NaN      NaN
+id150       -3.290663        NaN     NaN      NaN
+id151       -4.829461        NaN     NaN      NaN
+id152        2.092082        NaN     NaN      NaN
+id153        6.671032        NaN     NaN      NaN
+id154        2.579294        NaN     NaN      NaN
+id155        0.492990        NaN     NaN      NaN
+id156        3.344860        NaN     NaN      NaN
+id157        1.668219        NaN     NaN      NaN
+id158        4.648827        NaN     NaN      NaN
+id159        4.519507        NaN     NaN      NaN
+id160        4.012280        NaN     NaN      NaN
+id161       -2.585555        NaN     NaN      NaN
+id162        2.212323        NaN     NaN      NaN
+id163        0.332273        NaN     NaN      NaN
+id164        2.078569        NaN     NaN      NaN
+id165       -1.948104        NaN     NaN      NaN
+id166       -0.191457        NaN     NaN      NaN
+id167        0.957339        NaN     NaN      NaN
+id168        2.804266        NaN     NaN      NaN
+id169        4.725568        NaN     NaN      NaN
+id170       -1.517775        NaN     NaN      NaN
+id171        3.349393        NaN     NaN      NaN
+id172        5.125126        NaN     NaN      NaN
+id173       -0.512083        NaN     NaN      NaN
+id174       -0.958836        NaN     NaN      NaN
+id175       -3.933289        NaN     NaN      NaN
+id176       -0.571812        NaN     NaN      NaN
+id177        0.269539        NaN     NaN      NaN
+id178        0.951779        NaN     NaN      NaN
+id179       -5.402491        NaN     NaN      NaN
+id180       -4.763282        NaN     NaN      NaN
+id181        1.876394        NaN     NaN      NaN
+id182        1.588930        NaN     NaN      NaN
+id183        3.911228        NaN     NaN      NaN
+id184        4.416624        NaN     NaN      NaN
+id185       -6.155977        NaN     NaN      NaN
+id186        1.163833        NaN     NaN      NaN
+id187        0.747785        NaN     NaN      NaN
+id188       -1.151618        NaN     NaN      NaN
+id189       -2.030182        NaN     NaN      NaN
+id190       -3.221424        NaN     NaN      NaN
+id191       -6.375034        NaN     NaN      NaN
+id192        0.307610        NaN     NaN      NaN
+id193       -5.983610        NaN     NaN      NaN
+id194       -0.399760        NaN     NaN      NaN
+id195       -4.512177        NaN     NaN      NaN
+id196       -5.814159        NaN     NaN      NaN
+id197       -2.501782        NaN     NaN      NaN
+id198       -1.424414        NaN     NaN      NaN
+id199        2.668664        NaN     NaN      NaN
+id200       -2.775539        NaN     NaN      NaN
+id201        1.517944        NaN     NaN      NaN
+id202        0.968535        NaN     NaN      NaN
+id203       -1.480831        NaN     NaN      NaN
+id204        1.571465        NaN     NaN      NaN
+id205       -2.740879        NaN     NaN      NaN
+id206        1.263118        NaN     NaN      NaN
+id207       -2.102658        NaN     NaN      NaN
+id208       -1.970920        NaN     NaN      NaN
+id209       -4.076739        NaN     NaN      NaN
+id210        1.157299        NaN     NaN      NaN
+id211        0.066920        NaN     NaN      NaN
+id212        0.236502        NaN     NaN      NaN
+id213       -2.161911        NaN     NaN      NaN
+id214       -3.793488        NaN     NaN      NaN
+id215        5.957393        NaN     NaN      NaN
+id216       -2.856348        NaN     NaN      NaN
+id217       -1.157069        NaN     NaN      NaN
+id218        4.108378        NaN     NaN      NaN
+id219       -6.674606        NaN     NaN      NaN
+id220       -1.736833        NaN     NaN      NaN
+id221       -5.518012        NaN     NaN      NaN
+id222       -0.875544        NaN     NaN      NaN
+id223        2.232620        NaN     NaN      NaN
+id224        3.043330        NaN     NaN      NaN
+id225       -2.703479        NaN     NaN      NaN
+id226        7.364101        NaN     NaN      NaN
+id227        3.561208        NaN     NaN      NaN
+id228        7.823467        NaN     NaN      NaN
+id229        3.658364        NaN     NaN      NaN
+id230       -1.555812        NaN     NaN      NaN
+id231       -3.248950        NaN     NaN      NaN
+id232        4.513206        NaN     NaN      NaN
+id233        7.806494        NaN     NaN      NaN
+id234       -0.069750        NaN     NaN      NaN
+id235        0.657245        NaN     NaN      NaN
+id236        0.787228        NaN     NaN      NaN
+id237       -0.690326        NaN     NaN      NaN
+id238        6.770254        NaN     NaN      NaN
+id239        1.201065        NaN     NaN      NaN
+id240        0.428303        NaN     NaN      NaN
+id241        2.352230        NaN     NaN      NaN
+id242        0.838542        NaN     NaN      NaN
+id243       -1.233405        NaN     NaN      NaN
+id244       -1.380343        NaN     NaN      NaN
+id245        4.309859        NaN     NaN      NaN
+id246        1.229974        NaN     NaN      NaN
+id247       -0.495794        NaN     NaN      NaN
+id248       -1.595555        NaN     NaN      NaN
+id249       -1.717476        NaN     NaN      NaN
+id250        1.849140        NaN     NaN      NaN
+id251       -2.229270        NaN     NaN      NaN
+id252       -3.505128        NaN     NaN      NaN
+id253        0.645375        NaN     NaN      NaN
+id254        5.659115        NaN     NaN      NaN
+id255       -0.584484        NaN     NaN      NaN
+id256        2.453136        NaN     NaN      NaN
+id257       -7.783955        NaN     NaN      NaN
+id258        7.998525        NaN     NaN      NaN
+id259       -1.737798        NaN     NaN      NaN
+id260        0.727549        NaN     NaN      NaN
+id261       -0.483687        NaN     NaN      NaN
+id262        5.850925        NaN     NaN      NaN
+id263       -3.536442        NaN     NaN      NaN
+id264       -2.594814        NaN     NaN      NaN
+id265        4.284069        NaN     NaN      NaN
+id266       -4.943809        NaN     NaN      NaN
+id267       -0.388822        NaN     NaN      NaN
+id268        5.533110        NaN     NaN      NaN
+id269        1.439312        NaN     NaN      NaN
+id270       -1.093442        NaN     NaN      NaN
+id271       -3.552374        NaN     NaN      NaN
+id272        6.822019        NaN     NaN      NaN
+id273       -2.898653        NaN     NaN      NaN
+id274       -0.882841        NaN     NaN      NaN
+id275       -0.686111        NaN     NaN      NaN
+id276       -1.718351        NaN     NaN      NaN
+id277        2.079405        NaN     NaN      NaN
+id278       -0.966552        NaN     NaN      NaN
+id279       -0.613359        NaN     NaN      NaN
+id280       -0.580030        NaN     NaN      NaN
+id281        3.449256        NaN     NaN      NaN
+id282       -2.222284        NaN     NaN      NaN
+id283        5.890194        NaN     NaN      NaN
+id284        2.902057        NaN     NaN      NaN
+id285       -4.139878        NaN     NaN      NaN
+id286        5.722377        NaN     NaN      NaN
+id287       -1.383284        NaN     NaN      NaN
+id288        1.317398        NaN     NaN      NaN
+id289       -5.455802        NaN     NaN      NaN
+id290        2.304141        NaN     NaN      NaN
+id291        0.530476        NaN     NaN      NaN
+id292       -3.714042        NaN     NaN      NaN
+id293       -0.920766        NaN     NaN      NaN
+id294       -2.114293        NaN     NaN      NaN
+id295        0.563939        NaN     NaN      NaN
+id296        0.805756        NaN     NaN      NaN
+id297       -2.994472        NaN     NaN      NaN
+id298        0.683859        NaN     NaN      NaN
+id299        1.703918        NaN     NaN      NaN
+id300       -1.299600        NaN     NaN      NaN
+id301       -1.210447        NaN     NaN      NaN
+id302        2.739934        NaN     NaN      NaN
+id303        6.246590        NaN     NaN      NaN
+id304        2.027866        NaN     NaN      NaN
+id305        1.451462        NaN     NaN      NaN
+id306        0.090587        NaN     NaN      NaN
+id307        1.472452        NaN     NaN      NaN
+id308       -1.779591        NaN     NaN      NaN
+id309        0.520090        NaN     NaN      NaN
+id310       -1.251588        NaN     NaN      NaN
+id311       -2.953707        NaN     NaN      NaN
+id312        1.609381        NaN     NaN      NaN
+id313        1.859646        NaN     NaN      NaN
+id314        0.114071        NaN     NaN      NaN
+id315        4.833475        NaN     NaN      NaN
+id316        0.437150        NaN     NaN      NaN
+id317       -4.774624        NaN     NaN      NaN
+id318       -6.486236        NaN     NaN      NaN
+id319        1.685837        NaN     NaN      NaN
+id320       -1.987092        NaN     NaN      NaN
+id321        6.387385        NaN     NaN      NaN
+id322       -3.738495        NaN     NaN      NaN
+id323        1.681950        NaN     NaN      NaN
+id324        1.164967        NaN     NaN      NaN
+id325       -4.086415        NaN     NaN      NaN
+id326        0.188490        NaN     NaN      NaN
+id327       -1.473552        NaN     NaN      NaN
+id328       -1.335101        NaN     NaN      NaN
+id329        0.525494        NaN     NaN      NaN
+id330       -1.135150        NaN     NaN      NaN
+id331       -0.921942        NaN     NaN      NaN
+id332       -3.037918        NaN     NaN      NaN
+id333       -4.794145        NaN     NaN      NaN
+id334       -1.574592        NaN     NaN      NaN
+id335       -6.543570        NaN     NaN      NaN
+id336        0.936814        NaN     NaN      NaN
+id337        3.554446        NaN     NaN      NaN
+id338       -0.109443        NaN     NaN      NaN
+id339        2.314102        NaN     NaN      NaN
+id340       -5.041872        NaN     NaN      NaN
+id341       -4.230115        NaN     NaN      NaN
+id342        1.392608        NaN     NaN      NaN
+id343        0.409290        NaN     NaN      NaN
+id344       -0.116491        NaN     NaN      NaN
+id345        2.429139        NaN     NaN      NaN
+id346        1.405521        NaN     NaN      NaN
+id347       -0.953419        NaN     NaN      NaN
+id348       -1.446264        NaN     NaN      NaN
+id349        5.462303        NaN     NaN      NaN
+id350       -0.805864        NaN     NaN      NaN
+id351        5.617163        NaN     NaN      NaN
+id352       -3.981137        NaN     NaN      NaN
+id353       -8.443543        NaN     NaN      NaN
+id354       -7.309937        NaN     NaN      NaN
+id355       -1.829884        NaN     NaN      NaN
+id356       -2.084703        NaN     NaN      NaN
+id357        1.160777        NaN     NaN      NaN
+id358       -4.876628        NaN     NaN      NaN
+id359       -5.897290        NaN     NaN      NaN
+id360        3.851195        NaN     NaN      NaN
+id361       -5.669229        NaN     NaN      NaN
+id362       -3.927651        NaN     NaN      NaN
+id363       -2.143339        NaN     NaN      NaN
+id364        2.737919        NaN     NaN      NaN
+id365       -0.048557        NaN     NaN      NaN
+id366       -4.631399        NaN     NaN      NaN
+id367        2.046463        NaN     NaN      NaN
+id368       -1.373363        NaN     NaN      NaN
+id369        2.517044        NaN     NaN      NaN
+id370       -1.889863        NaN     NaN      NaN
+id371       -0.898835        NaN     NaN      NaN
+id372       -3.700613        NaN     NaN      NaN
+id373        3.623622        NaN     NaN      NaN
+id374        3.991698        NaN     NaN      NaN
+id375       -5.902129        NaN     NaN      NaN
+id376       -2.185414        NaN     NaN      NaN
+id377        2.816340        NaN     NaN      NaN
+id378       -0.543502        NaN     NaN      NaN
+id379       -0.820627        NaN     NaN      NaN
+id380        1.416599        NaN     NaN      NaN
+id381       -2.649059        NaN     NaN      NaN
+id382        1.308279        NaN     NaN      NaN
+id383        1.491380        NaN     NaN      NaN
+id384       -0.248184        NaN     NaN      NaN
+id385       -3.643557        NaN     NaN      NaN
+id386       -0.874283        NaN     NaN      NaN
+id387       -4.446670        NaN     NaN      NaN
+id388       -3.380854        NaN     NaN      NaN
+id389        2.586810        NaN     NaN      NaN
+id390        3.714403        NaN     NaN      NaN
+id391        0.645741        NaN     NaN      NaN
+id392        3.446937        NaN     NaN      NaN
+id393       -5.471542        NaN     NaN      NaN
+id394        4.780836        NaN     NaN      NaN
+id395       -2.091173        NaN     NaN      NaN
+id396        1.857111        NaN     NaN      NaN
+id397        2.909695        NaN     NaN      NaN
+id398        0.065995        NaN     NaN      NaN
+id399       -2.270840        NaN     NaN      NaN
+id400        3.081767        NaN     NaN      NaN
+id401        5.893574        NaN     NaN      NaN
+id402        0.002477        NaN     NaN      NaN
+id403       -3.757182        NaN     NaN      NaN
+id404       -0.293054        NaN     NaN      NaN
+id405       -1.946413        NaN     NaN      NaN
+id406       -0.153900        NaN     NaN      NaN
+id407        4.931698        NaN     NaN      NaN
+id408       -1.871600        NaN     NaN      NaN
+id409       -1.326362        NaN     NaN      NaN
+id410       -3.348475        NaN     NaN      NaN
+id411       -0.470939        NaN     NaN      NaN
+id412        2.292850        NaN     NaN      NaN
+id413       -3.303958        NaN     NaN      NaN
+id414       -0.073291        NaN     NaN      NaN
+id415       -1.934160        NaN     NaN      NaN
+id416       -3.522876        NaN     NaN      NaN
+id417        2.309909        NaN     NaN      NaN
+id418       -2.611881        NaN     NaN      NaN
+id419        4.142824        NaN     NaN      NaN
+id420       -0.204475        NaN     NaN      NaN
+id421        0.767477        NaN     NaN      NaN
+id422       -0.512774        NaN     NaN      NaN
+id423        5.413419        NaN     NaN      NaN
+id424       -0.950115        NaN     NaN      NaN
+id425        0.624981        NaN     NaN      NaN
+id426        4.994062        NaN     NaN      NaN
+id427        0.871782        NaN     NaN      NaN
+id428       -3.035259        NaN     NaN      NaN
+id429       -0.298612        NaN     NaN      NaN
+id430        2.689997        NaN     NaN      NaN
+id431       -3.066872        NaN     NaN      NaN
+id432       -2.375388        NaN     NaN      NaN
+id433       -2.595286        NaN     NaN      NaN
+id434       -0.744770        NaN     NaN      NaN
+id435        0.269007        NaN     NaN      NaN
+id436        1.880491        NaN     NaN      NaN
+id437       -1.400405        NaN     NaN      NaN
+id438       -0.894087        NaN     NaN      NaN
+id439        1.023971        NaN     NaN      NaN
+id440        2.627767        NaN     NaN      NaN
+id441        0.202996        NaN     NaN      NaN
+id442        2.055308        NaN     NaN      NaN
+id443        6.589999        NaN     NaN      NaN
+id444       -3.612916        NaN     NaN      NaN
+id445        5.766620        NaN     NaN      NaN
+id446        2.708597        NaN     NaN      NaN
+id447       -5.765060        NaN     NaN      NaN
+id448       -0.506724        NaN     NaN      NaN
+id449       -0.453817        NaN     NaN      NaN
+id450        0.828621        NaN     NaN      NaN
+id451        0.273379        NaN     NaN      NaN
+id452       -2.572833        NaN     NaN      NaN
+id453       -1.769755        NaN     NaN      NaN
+id454        2.606832        NaN     NaN      NaN
+id455       -4.811675        NaN     NaN      NaN
+id456       -7.305775        NaN     NaN      NaN
+id457       -3.254063        NaN     NaN      NaN
+id458       -1.045476        NaN     NaN      NaN
+id459        2.997779        NaN     NaN      NaN
+id460       -5.252229        NaN     NaN      NaN
+id461       -2.307571        NaN     NaN      NaN
+id462       -0.253405        NaN     NaN      NaN
+id463       -6.852945        NaN     NaN      NaN
+id464        5.374005        NaN     NaN      NaN
+id465        3.055771        NaN     NaN      NaN
+id466       -2.386986        NaN     NaN      NaN
+id467        9.521882        NaN     NaN      NaN
+id468        3.728500        NaN     NaN      NaN
+id469       -1.032268        NaN     NaN      NaN
+id470       -0.404764        NaN     NaN      NaN
+id471       -0.022636        NaN     NaN      NaN
+id472       -5.867917        NaN     NaN      NaN
+id473        2.380601        NaN     NaN      NaN
+id474       -3.217417        NaN     NaN      NaN
+id475        1.249956        NaN     NaN      NaN
+id476       -1.402675        NaN     NaN      NaN
+id477        3.823734        NaN     NaN      NaN
+id478       -3.976771        NaN     NaN      NaN
+id479        2.246807        NaN     NaN      NaN
+id480        1.143913        NaN     NaN      NaN
+id481       -0.387989        NaN     NaN      NaN
+id482        0.023081        NaN     NaN      NaN
+id483        0.841854        NaN     NaN      NaN
+id484        2.221302        NaN     NaN      NaN
+id485       -3.438266        NaN     NaN      NaN
+id486       -2.717856        NaN     NaN      NaN
+id487       -2.954117        NaN     NaN      NaN
+id488        3.948103        NaN     NaN      NaN
+id489        1.252994        NaN     NaN      NaN
+id490       -7.551563        NaN     NaN      NaN
+id491       -7.982688        NaN     NaN      NaN
+id492        5.704923        NaN     NaN      NaN
+id493       -1.318274        NaN     NaN      NaN
+id494       -1.889039        NaN     NaN      NaN
+id495        1.095552        NaN     NaN      NaN
+id496        1.120952        NaN     NaN      NaN
+id497        0.252303        NaN     NaN      NaN
+id498        0.286749        NaN     NaN      NaN
+id499        1.169296        NaN     NaN      NaN
+id500        5.293651        NaN     NaN      NaN
+id501       -0.331084        NaN     NaN      NaN
+id502        1.106032        NaN     NaN      NaN
+id503       -0.541451        NaN     NaN      NaN
+id504        0.076939        NaN     NaN      NaN
+id505        3.645508        NaN     NaN      NaN
+id506        1.503593        NaN     NaN      NaN
+id507       -5.354185        NaN     NaN      NaN
+id508        2.306237        NaN     NaN      NaN
+id509        5.342508        NaN     NaN      NaN
+id510       -6.837977        NaN     NaN      NaN
+id511        5.205055        NaN     NaN      NaN
+id512       -4.585218        NaN     NaN      NaN
+id513       -4.540492        NaN     NaN      NaN
+id514       -1.345118        NaN     NaN      NaN
+id515        3.236269        NaN     NaN      NaN
+id516        5.998104        NaN     NaN      NaN
+id517       -2.375982        NaN     NaN      NaN
+id518       -5.442682        NaN     NaN      NaN
+id519       -7.036291        NaN     NaN      NaN
+id520        1.733943        NaN     NaN      NaN
+id521        2.929402        NaN     NaN      NaN
+id522       -2.658121        NaN     NaN      NaN
+id523        1.334393        NaN     NaN      NaN
+id524        3.307764        NaN     NaN      NaN
+id525        3.244485        NaN     NaN      NaN
+id526       -2.188349        NaN     NaN      NaN
+id527       -1.489313        NaN     NaN      NaN
+id528       -6.721282        NaN     NaN      NaN
+id529       -2.272152        NaN     NaN      NaN
+id530        5.658477        NaN     NaN      NaN
+id531       -0.810931        NaN     NaN      NaN
+id532        6.977583        NaN     NaN      NaN
+id533       -6.888570        NaN     NaN      NaN
+id534        5.429274        NaN     NaN      NaN
+id535       -5.799669        NaN     NaN      NaN
+id536       -5.127247        NaN     NaN      NaN
+id537       -0.233835        NaN     NaN      NaN
+id538       -2.288359        NaN     NaN      NaN
+id539        2.311185        NaN     NaN      NaN
+id540       -0.359611        NaN     NaN      NaN
+id541        0.223407        NaN     NaN      NaN
+id542        0.485822        NaN     NaN      NaN
+id543        5.091096        NaN     NaN      NaN
+id544       -2.555923        NaN     NaN      NaN
+id545       -6.074294        NaN     NaN      NaN
+id546        3.437849        NaN     NaN      NaN
+id547        3.584669        NaN     NaN      NaN
+id548        2.291109        NaN     NaN      NaN
+id549        4.127322        NaN     NaN      NaN
+id550        0.019069        NaN     NaN      NaN
+id551        0.530111        NaN     NaN      NaN
+id552       -2.405723        NaN     NaN      NaN
+id553       -1.141038        NaN     NaN      NaN
+id554        4.877973        NaN     NaN      NaN
+id555       -0.536715        NaN     NaN      NaN
+id556       -6.368312        NaN     NaN      NaN
+id557       -1.576676        NaN     NaN      NaN
+id558       -1.486445        NaN     NaN      NaN
+id559       -5.188877        NaN     NaN      NaN
+id560       -0.911937        NaN     NaN      NaN
+id561       -2.357135        NaN     NaN      NaN
+id562        1.697848        NaN     NaN      NaN
+id563        5.379356        NaN     NaN      NaN
+id564        6.327757        NaN     NaN      NaN
+id565       -2.911390        NaN     NaN      NaN
+id566        5.040706        NaN     NaN      NaN
+id567        5.348935        NaN     NaN      NaN
+id568       -8.502911        NaN     NaN      NaN
+id569       -3.974889        NaN     NaN      NaN
+id570        2.838431        NaN     NaN      NaN
+id571       -2.315553        NaN     NaN      NaN
+id572       -5.425564        NaN     NaN      NaN
+id573        0.652336        NaN     NaN      NaN
+id574        1.637768        NaN     NaN      NaN
+id575        2.278375        NaN     NaN      NaN
+id576       -1.491276        NaN     NaN      NaN
+id577       -5.683695        NaN     NaN      NaN
+id578        3.768867        NaN     NaN      NaN
+id579       -0.275565        NaN     NaN      NaN
+id580        2.685362        NaN     NaN      NaN
+id581        1.998504        NaN     NaN      NaN
+id582       -6.476126        NaN     NaN      NaN
+id583        2.393182        NaN     NaN      NaN
+id584       -2.175400        NaN     NaN      NaN
+id585        4.262111        NaN     NaN      NaN
+id586       -0.316124        NaN     NaN      NaN
+id587        6.225490        NaN     NaN      NaN
+id588       -0.395294        NaN     NaN      NaN
+id589       -3.829986        NaN     NaN      NaN
+id590        0.963686        NaN     NaN      NaN
+id591        4.142926        NaN     NaN      NaN
+id592        0.231678        NaN     NaN      NaN
+id593        2.324436        NaN     NaN      NaN
+id594        1.821402        NaN     NaN      NaN
+id595        0.029853        NaN     NaN      NaN
+id596        0.318565        NaN     NaN      NaN
+id597       -0.730671        NaN     NaN      NaN
+id598        4.497796        NaN     NaN      NaN
+id599       -1.737110        NaN     NaN      NaN
+id600        6.066641        NaN     NaN      NaN
+id601       -2.024531        NaN     NaN      NaN
+id602        1.736018        NaN     NaN      NaN
+id603       -0.094357        NaN     NaN      NaN
+id604       -1.232476        NaN     NaN      NaN
+id605       -2.062690        NaN     NaN      NaN
+id606       -2.578260        NaN     NaN      NaN
+id607       -1.826695        NaN     NaN      NaN
+id608        4.699777        NaN     NaN      NaN
+id609       -0.913914        NaN     NaN      NaN
+id610        2.437080        NaN     NaN      NaN
+id611        0.872858        NaN     NaN      NaN
+id612        1.163136        NaN     NaN      NaN
+id613       -1.641093        NaN     NaN      NaN
+id614        3.103576        NaN     NaN      NaN
+id615        5.235982        NaN     NaN      NaN
+id616       -3.507410        NaN     NaN      NaN
+id617       -5.653802        NaN     NaN      NaN
+id618       -3.541012        NaN     NaN      NaN
+id619        2.394427        NaN     NaN      NaN
+id620       -0.955434        NaN     NaN      NaN
+id621        0.773807        NaN     NaN      NaN
+id622       -1.522498        NaN     NaN      NaN
+id623       -1.854223        NaN     NaN      NaN
+id624       -2.299224        NaN     NaN      NaN
+id625        1.564208        NaN     NaN      NaN
+id626        0.469697        NaN     NaN      NaN
+id627        4.521432        NaN     NaN      NaN
+id628        1.974317        NaN     NaN      NaN
+id629        1.601202        NaN     NaN      NaN
+id630        0.904493        NaN     NaN      NaN
+id631        2.217651        NaN     NaN      NaN
+id632       -3.152049        NaN     NaN      NaN
+id633       -2.165466        NaN     NaN      NaN
+id634        0.565416        NaN     NaN      NaN
+id635        5.802529        NaN     NaN      NaN
+id636        1.560433        NaN     NaN      NaN
+id637       -0.658290        NaN     NaN      NaN
+id638        5.383489        NaN     NaN      NaN
+id639       -2.104600        NaN     NaN      NaN
+id640        4.735380        NaN     NaN      NaN
+id641        5.086610        NaN     NaN      NaN
+id642       -0.819760        NaN     NaN      NaN
+id643        0.221710        NaN     NaN      NaN
+id644       -0.287626        NaN     NaN      NaN
+id645       -1.531351        NaN     NaN      NaN
+id646        2.327855        NaN     NaN      NaN
+id647        0.575283        NaN     NaN      NaN
+id648        1.084086        NaN     NaN      NaN
+id649        1.973392        NaN     NaN      NaN
+id650        5.139878        NaN     NaN      NaN
+id651       -6.438407        NaN     NaN      NaN
+id652        3.664126        NaN     NaN      NaN
+id653        2.410351        NaN     NaN      NaN
+id654       -0.982281        NaN     NaN      NaN
+id655       -3.004044        NaN     NaN      NaN
+id656        3.352624        NaN     NaN      NaN
+id657        4.286253        NaN     NaN      NaN
+id658       -4.780012        NaN     NaN      NaN
+id659        1.713768        NaN     NaN      NaN
+id660       -2.725136        NaN     NaN      NaN
+id661       -1.124040        NaN     NaN      NaN
+id662        3.230678        NaN     NaN      NaN
+id663        1.825397        NaN     NaN      NaN
+id664        4.847927        NaN     NaN      NaN
+id665       -0.942963        NaN     NaN      NaN
+id666        5.594415        NaN     NaN      NaN
+id667        0.781474        NaN     NaN      NaN
+id668        2.588274        NaN     NaN      NaN
+id669        3.070415        NaN     NaN      NaN
+id670       -5.108287        NaN     NaN      NaN
+id671        2.730288        NaN     NaN      NaN
+id672        5.351861        NaN     NaN      NaN
+id673       -1.466191        NaN     NaN      NaN
+id674       -3.763451        NaN     NaN      NaN
+id675       -6.754064        NaN     NaN      NaN
+id676       -1.185486        NaN     NaN      NaN
+id677        2.425961        NaN     NaN      NaN
+id678        2.093633        NaN     NaN      NaN
+id679        2.857742        NaN     NaN      NaN
+id680       -2.981460        NaN     NaN      NaN
+id681       -1.834203        NaN     NaN      NaN
+id682       -3.759921        NaN     NaN      NaN
+id683        4.753344        NaN     NaN      NaN
+id684        0.897541        NaN     NaN      NaN
+id685        2.063028        NaN     NaN      NaN
+id686       -1.622336        NaN     NaN      NaN
+id687       -3.011394        NaN     NaN      NaN
+id688        2.027774        NaN     NaN      NaN
+id689        5.307479        NaN     NaN      NaN
+id690       -2.515796        NaN     NaN      NaN
+id691       -3.563560        NaN     NaN      NaN
+id692       -2.861782        NaN     NaN      NaN
+id693        2.999510        NaN     NaN      NaN
+id694        1.768598        NaN     NaN      NaN
+id695       -1.893954        NaN     NaN      NaN
+id696        2.471729        NaN     NaN      NaN
+id697        7.400607        NaN     NaN      NaN
+id698        7.200909        NaN     NaN      NaN
+id699        6.555270        NaN     NaN      NaN
+id700        5.396291        NaN     NaN      NaN
+id701        3.992023        NaN     NaN      NaN
+id702       -1.848058        NaN     NaN      NaN
+id703       -3.420019        NaN     NaN      NaN
+id704        1.827431        NaN     NaN      NaN
+id705        2.669097        NaN     NaN      NaN
+id706       -3.002342        NaN     NaN      NaN
+id707       -0.982189        NaN     NaN      NaN
+id708        1.249943        NaN     NaN      NaN
+id709       -1.659352        NaN     NaN      NaN
+id710       -0.019882        NaN     NaN      NaN
+id711       -4.818058        NaN     NaN      NaN
+id712        0.282155        NaN     NaN      NaN
+id713        4.992498        NaN     NaN      NaN
+id714        0.480692        NaN     NaN      NaN
+id715       -3.250286        NaN     NaN      NaN
+id716        0.543305        NaN     NaN      NaN
+id717        0.176182        NaN     NaN      NaN
+id718       -3.848213        NaN     NaN      NaN
+id719        0.808798        NaN     NaN      NaN
+id720       -0.057652        NaN     NaN      NaN
+id721        1.523268        NaN     NaN      NaN
+id722        0.104860        NaN     NaN      NaN
+id723        3.233880        NaN     NaN      NaN
+id724        1.903728        NaN     NaN      NaN
+id725        5.150582        NaN     NaN      NaN
+id726        0.638697        NaN     NaN      NaN
+id727        1.461413        NaN     NaN      NaN
+id728       -1.251869        NaN     NaN      NaN
+id729        0.490082        NaN     NaN      NaN
+id730        2.771089        NaN     NaN      NaN
+id731        1.526953        NaN     NaN      NaN
+id732        4.190047        NaN     NaN      NaN
+id733        0.907739        NaN     NaN      NaN
+id734        2.650532        NaN     NaN      NaN
+id735       -0.136652        NaN     NaN      NaN
+id736       -3.433143        NaN     NaN      NaN
+id737       -6.236701        NaN     NaN      NaN
+id738        3.886930        NaN     NaN      NaN
+id739       -0.972561        NaN     NaN      NaN
+id740       -3.851422        NaN     NaN      NaN
+id741       -3.895296        NaN     NaN      NaN
+id742       -4.532139        NaN     NaN      NaN
+id743       -1.530273        NaN     NaN      NaN
+id744        3.397187        NaN     NaN      NaN
+id745       -8.105408        NaN     NaN      NaN
+id746        1.225590        NaN     NaN      NaN
+id747       -1.971290        NaN     NaN      NaN
+id748        1.874677        NaN     NaN      NaN
+id749       -0.050707        NaN     NaN      NaN
+id750        1.386444        NaN     NaN      NaN
+id751       -1.143972        NaN     NaN      NaN
+id752        7.542724        NaN     NaN      NaN
+id753        1.663160        NaN     NaN      NaN
+id754        2.777089        NaN     NaN      NaN
+id755        1.821477        NaN     NaN      NaN
+id756        5.437834        NaN     NaN      NaN
+id757       -2.180970        NaN     NaN      NaN
+id758       -6.069431        NaN     NaN      NaN
+id759        4.683783        NaN     NaN      NaN
+id760        3.580626        NaN     NaN      NaN
+id761        3.184968        NaN     NaN      NaN
+id762        2.389925        NaN     NaN      NaN
+id763        3.446459        NaN     NaN      NaN
+id764       -0.710454        NaN     NaN      NaN
+id765       -4.735648        NaN     NaN      NaN
+id766        0.832162        NaN     NaN      NaN
+id767        0.556565        NaN     NaN      NaN
+id768       -1.124984        NaN     NaN      NaN
+id769        0.279954        NaN     NaN      NaN
+id770       -0.603968        NaN     NaN      NaN
+id771        0.774009        NaN     NaN      NaN
+id772       -1.684775        NaN     NaN      NaN
+id773        1.078292        NaN     NaN      NaN
+id774       -3.245859        NaN     NaN      NaN
+id775        3.023595        NaN     NaN      NaN
+id776        2.931893        NaN     NaN      NaN
+id777        7.442222        NaN     NaN      NaN
+id778        7.349607        NaN     NaN      NaN
+id779        0.045947        NaN     NaN      NaN
+id780        2.387407        NaN     NaN      NaN
+id781       -0.761674        NaN     NaN      NaN
+id782       -3.454327        NaN     NaN      NaN
+id783        0.567579        NaN     NaN      NaN
+id784       -1.123596        NaN     NaN      NaN
+id785       -2.993309        NaN     NaN      NaN
+id786       -3.626757        NaN     NaN      NaN
+id787       -0.450567        NaN     NaN      NaN
+id788       -6.473270        NaN     NaN      NaN
+id789        1.013940        NaN     NaN      NaN
+id790       -0.723804        NaN     NaN      NaN
+id791        4.891480        NaN     NaN      NaN
+id792       -6.099362        NaN     NaN      NaN
+id793       -4.631366        NaN     NaN      NaN
+id794        2.338011        NaN     NaN      NaN
+id795        0.555079        NaN     NaN      NaN
+id796       -2.093528        NaN     NaN      NaN
+id797       -0.875729        NaN     NaN      NaN
+id798       -0.481316        NaN     NaN      NaN
+id799        2.309521        NaN     NaN      NaN
+id800        1.751449        NaN     NaN      NaN
+id801       -0.760349        NaN     NaN      NaN
+id802       -3.344747        NaN     NaN      NaN
+id803       -5.515764        NaN     NaN      NaN
+id804        0.806832        NaN     NaN      NaN
+id805        4.983960        NaN     NaN      NaN
+id806       -0.165326        NaN     NaN      NaN
+id807       -4.246890        NaN     NaN      NaN
+id808        1.959023        NaN     NaN      NaN
+id809       -3.045806        NaN     NaN      NaN
+id810        5.731054        NaN     NaN      NaN
+id811        2.329532        NaN     NaN      NaN
+id812        1.052523        NaN     NaN      NaN
+id813        3.803238        NaN     NaN      NaN
+id814       -0.072867        NaN     NaN      NaN
+id815        4.263153        NaN     NaN      NaN
+id816        0.829103        NaN     NaN      NaN
+id817        0.965316        NaN     NaN      NaN
+id818       -4.650230        NaN     NaN      NaN
+id819        0.453728        NaN     NaN      NaN
+id820        0.756773        NaN     NaN      NaN
+id821        4.463202        NaN     NaN      NaN
+id822       -3.692305        NaN     NaN      NaN
+id823       -7.675715        NaN     NaN      NaN
+id824       -2.331324        NaN     NaN      NaN
+id825        3.125638        NaN     NaN      NaN
+id826       -7.115692        NaN     NaN      NaN
+id827        1.219589        NaN     NaN      NaN
+id828        2.890349        NaN     NaN      NaN
+id829       -2.384038        NaN     NaN      NaN
+id830        1.267135        NaN     NaN      NaN
+id831        0.258343        NaN     NaN      NaN
+id832       -2.981566        NaN     NaN      NaN
+id833       -1.424593        NaN     NaN      NaN
+id834       -1.338733        NaN     NaN      NaN
+id835       -1.506635        NaN     NaN      NaN
+id836        5.661090        NaN     NaN      NaN
+id837        1.656418        NaN     NaN      NaN
+id838        2.978104        NaN     NaN      NaN
+id839       -2.900063        NaN     NaN      NaN
+id840        2.386588        NaN     NaN      NaN
+id841        2.407725        NaN     NaN      NaN
+id842       -0.859427        NaN     NaN      NaN
+id843        1.340842        NaN     NaN      NaN
+id844       -0.723094        NaN     NaN      NaN
+id845        0.377343        NaN     NaN      NaN
+id846       -0.979811        NaN     NaN      NaN
+id847       -5.884587        NaN     NaN      NaN
+id848        1.838159        NaN     NaN      NaN
+id849        1.001961        NaN     NaN      NaN
+id850        0.347227        NaN     NaN      NaN
+id851       -8.134822        NaN     NaN      NaN
+id852        1.492771        NaN     NaN      NaN
+id853        5.306980        NaN     NaN      NaN
+id854       -0.588717        NaN     NaN      NaN
+id855       -1.616689        NaN     NaN      NaN
+id856       -1.787891        NaN     NaN      NaN
+id857        1.494525        NaN     NaN      NaN
+id858        1.799168        NaN     NaN      NaN
+id859        1.718568        NaN     NaN      NaN
+id860       -2.014178        NaN     NaN      NaN
+id861        0.470220        NaN     NaN      NaN
+id862        1.199491        NaN     NaN      NaN
+id863       -7.376254        NaN     NaN      NaN
+id864       -6.688985        NaN     NaN      NaN
+id865        0.336191        NaN     NaN      NaN
+id866       -1.088263        NaN     NaN      NaN
+id867        1.644623        NaN     NaN      NaN
+id868       -1.498101        NaN     NaN      NaN
+id869        1.208026        NaN     NaN      NaN
+id870        2.483432        NaN     NaN      NaN
+id871        0.944164        NaN     NaN      NaN
+id872       -0.729842        NaN     NaN      NaN
+id873        2.439103        NaN     NaN      NaN
+id874        5.456091        NaN     NaN      NaN
+id875        2.075083        NaN     NaN      NaN
+id876        3.531253        NaN     NaN      NaN
+id877        1.148835        NaN     NaN      NaN
+id878       -2.010938        NaN     NaN      NaN
+id879       -0.286370        NaN     NaN      NaN
+id880        0.919646        NaN     NaN      NaN
+id881        2.666587        NaN     NaN      NaN
+id882        1.317050        NaN     NaN      NaN
+id883       -4.113230        NaN     NaN      NaN
+id884       -2.261208        NaN     NaN      NaN
+id885        3.655147        NaN     NaN      NaN
+id886        2.503972        NaN     NaN      NaN
+id887        0.542877        NaN     NaN      NaN
+id888       -3.884484        NaN     NaN      NaN
+id889        0.236291        NaN     NaN      NaN
+id890       -1.899436        NaN     NaN      NaN
+id891        2.884554        NaN     NaN      NaN
+id892        2.356635        NaN     NaN      NaN
+id893       -5.225836        NaN     NaN      NaN
+id894        3.227190        NaN     NaN      NaN
+id895        3.264457        NaN     NaN      NaN
+id896       -0.313277        NaN     NaN      NaN
+id897        2.293354        NaN     NaN      NaN
+id898        0.206943        NaN     NaN      NaN
+id899       -5.273126        NaN     NaN      NaN
+id900        3.779070        NaN     NaN      NaN
+id901       -1.636774        NaN     NaN      NaN
+id902        2.076156        NaN     NaN      NaN
+id903        0.804609        NaN     NaN      NaN
+id904       -0.796601        NaN     NaN      NaN
+id905        2.865978        NaN     NaN      NaN
+id906        4.340907        NaN     NaN      NaN
+id907        5.638677        NaN     NaN      NaN
+id908        5.555277        NaN     NaN      NaN
+id909       -3.172550        NaN     NaN      NaN
+id910        0.253858        NaN     NaN      NaN
+id911       -5.150945        NaN     NaN      NaN
+id912       -1.641619        NaN     NaN      NaN
+id913        4.173926        NaN     NaN      NaN
+id914        1.983718        NaN     NaN      NaN
+id915       -0.800980        NaN     NaN      NaN
+id916        4.231497        NaN     NaN      NaN
+id917       -4.310394        NaN     NaN      NaN
+id918       -4.967951        NaN     NaN      NaN
+id919       -1.425061        NaN     NaN      NaN
+id920        2.151493        NaN     NaN      NaN
+id921        3.207827        NaN     NaN      NaN
+id922       -0.236584        NaN     NaN      NaN
+id923        0.582469        NaN     NaN      NaN
+id924       -0.493543        NaN     NaN      NaN
+id925       -1.829055        NaN     NaN      NaN
+id926        1.733676        NaN     NaN      NaN
+id927        1.375654        NaN     NaN      NaN
+id928       -1.966329        NaN     NaN      NaN
+id929       -0.984431        NaN     NaN      NaN
+id930       -1.829897        NaN     NaN      NaN
+id931       -3.635492        NaN     NaN      NaN
+id932        1.494467        NaN     NaN      NaN
+id933        2.576946        NaN     NaN      NaN
+id934        3.616481        NaN     NaN      NaN
+id935        1.806531        NaN     NaN      NaN
+id936        3.306493        NaN     NaN      NaN
+id937        5.586669        NaN     NaN      NaN
+id938        4.091979        NaN     NaN      NaN
+id939        0.817787        NaN     NaN      NaN
+id940       -2.646462        NaN     NaN      NaN
+id941       -2.634807        NaN     NaN      NaN
+id942        2.320478        NaN     NaN      NaN
+id943        0.254778        NaN     NaN      NaN
+id944        1.272194        NaN     NaN      NaN
+id945        4.987440        NaN     NaN      NaN
+id946        0.265818        NaN     NaN      NaN
+id947       -1.623980        NaN     NaN      NaN
+id948       -2.934268        NaN     NaN      NaN
+id949       -2.890165        NaN     NaN      NaN
+id950        1.925683        NaN     NaN      NaN
+id951        2.832474        NaN     NaN      NaN
+id952        3.020225        NaN     NaN      NaN
+id953       -1.611900        NaN     NaN      NaN
+id954        2.028584        NaN     NaN      NaN
+id955        4.945063        NaN     NaN      NaN
+id956        0.563405        NaN     NaN      NaN
+id957        5.341321        NaN     NaN      NaN
+id958       -3.821610        NaN     NaN      NaN
+id959       -0.963985        NaN     NaN      NaN
+id960       -1.321490        NaN     NaN      NaN
+id961       -2.375946        NaN     NaN      NaN
+id962       -0.763390        NaN     NaN      NaN
+id963        8.250794        NaN     NaN      NaN
+id964       -4.505008        NaN     NaN      NaN
+id965       -0.103281        NaN     NaN      NaN
+id966        1.237859        NaN     NaN      NaN
+id967       -3.871727        NaN     NaN      NaN
+id968       -4.399079        NaN     NaN      NaN
+id969        1.102679        NaN     NaN      NaN
+id970        0.322716        NaN     NaN      NaN
+id971        2.947029        NaN     NaN      NaN
+id972       -1.182501        NaN     NaN      NaN
+id973       -1.688774        NaN     NaN      NaN
+id974        2.934540        NaN     NaN      NaN
+id975        3.524691        NaN     NaN      NaN
+id976       -3.249212        NaN     NaN      NaN
+id977        0.926098        NaN     NaN      NaN
+id978        1.062285        NaN     NaN      NaN
+id979       -2.664708        NaN     NaN      NaN
+id980        2.223747        NaN     NaN      NaN
+id981        0.842281        NaN     NaN      NaN
+id982        4.094510        NaN     NaN      NaN
+id983        3.180689        NaN     NaN      NaN
+id984       -2.425165        NaN     NaN      NaN
+id985       -2.840638        NaN     NaN      NaN
+id986        0.332924        NaN     NaN      NaN
+id987        4.955927        NaN     NaN      NaN
+id988       -1.747853        NaN     NaN      NaN
+id989        2.296766        NaN     NaN      NaN
+id990       -5.782794        NaN     NaN      NaN
+id991        3.157182        NaN     NaN      NaN
+id992       -2.524036        NaN     NaN      NaN
+id993        4.596090        NaN     NaN      NaN
+id994        3.573790        NaN     NaN      NaN
+id995        3.226311        NaN     NaN      NaN
+id996       -1.058865        NaN     NaN      NaN
+id997        1.630657        NaN     NaN      NaN
+id998       -3.871951        NaN     NaN      NaN
+id999       -0.949631        NaN     NaN      NaN
+id1000             NA         NA      NA       NA
+
+Residual standard error: NaN on 0 degrees of freedom
+Multiple R-squared:      1, Adjusted R-squared:    NaN 
+F-statistic:   NaN on 999 and 0 DF,  p-value: NA</code></pre>
+</div>
+</div>
+<p>この場合、係数は推計されるが標準誤差は推計されないようである。 係数が推計されることは、OLS推定量の式と条件からわかる。OLS推定量は以下のように表すことができる。</p>
+<p>このxとyに行列を当てはめるだけで推定値は計算される。さらに、行列はランク落ちしないため多重共線性の問題もない。</p>
+<p>しかし、分散を計算する場合は話が違ってくる。 この場合のβの漸近分散は以下のように与えられる。</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#これは、誤差項の分散の不偏推定量である平均残差平方（MSE）の自由度がゼロになり、パラメーター推定値の漸近分散が導出できないから。</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model_fe <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, <span class="at">data =</span> data) <span class="co">#within推定は不可能。</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in feols(y ~ x | id, data = data): All observations are fixed-effects singletons. The estimation cannot be
+done.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#個人固定効果の推定結果の表示</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/your-website-url\.example\.com");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -3,7 +3,6 @@ title: "個人固定効果の推定"
 author: "corocorohashioka"
 date: "2026-01-12"
 categories: [econometrics]
-format: html
 execute: 
   warning: false
 
@@ -52,10 +51,6 @@ y <- 1 + 2 * x + indi + rnorm(N, mean = 0, sd = 1)
 data <- data.frame(id = 1:N, y = y, x = x)
 data$id <- as.factor(data$id)
 
-#これは、誤差項の分散の不偏推定量である平均残差平方（MSE）の自由度がゼロになり、パラメーター推定値の漸近分散が導出できないから。
-model_fe <- feols(y ~ x | id, data = data) #within推定は不可能。
-#個人固定効果の推定結果の表示
-coef(model_fe)
 ```
 
 まず、固定効果を含めない回帰分析の結果を確認する。
@@ -76,12 +71,18 @@ summary(model_fe)
 
 この場合、係数は推計されるが標準誤差は推計されないようである。
 係数が推計されることは、OLS推定量の式と条件からわかる。OLS推定量は以下のように表すことができる。
-$$
-beta
+
 
 このxとyに行列を当てはめるだけで推定値は計算される。さらに、行列はランク落ちしないため多重共線性の問題もない。
 
 しかし、分散を計算する場合は話が違ってくる。
 この場合のβの漸近分散は以下のように与えられる。
+
+```{r}
+#| error: true
+#これは、誤差項の分散の不偏推定量である平均残差平方（MSE）の自由度がゼロになり、パラメーター推定値の漸近分散が導出できないから。
+model_fe <- feols(y ~ x | id, data = data) #within推定は不可能。
+#個人固定効果の推定結果の表示
+```
 
 
