@@ -1,0 +1,14 @@
+---
+title: "個人固定効果の推定"
+author: "corocorohashioka"
+date: "2026-01-12"
+categories: [econometrics]
+execute: 
+  echo: false
+  warning: false
+---
+
+計量経済学では、ダミー変数やWithin変換を用いて固定効果分析が行われる。一般的な推定では、固定効果は複数のobservationに対して一つ存在する。
+クロスセクションでは、固定効果の分析を行うことはできないのだろうか？以下、データを生成して回帰分析を回す。
+```{r}
+V
