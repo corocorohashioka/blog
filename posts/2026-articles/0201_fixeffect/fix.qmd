@@ -11,4 +11,22 @@ execute:
 計量経済学では、ダミー変数やWithin変換を用いて固定効果分析が行われる。一般的な推定では、固定効果は複数のobservationに対して一つ存在する。
 クロスセクションでは、固定効果の分析を行うことはできないのだろうか？以下、データを生成して回帰分析を回す。
 ```{r}
-V
+library(dplyr)
+library(fixest)
+
+N <- 1000
+indi <- rnorm(N, mean = 0, sd = 1)
+x <- rbinom(N, 3, 0.5)
+y <- 1 + 2 * x + indi + rnorm(N, mean = 0, sd = 1)
+data <- data.frame(id = 1:N, y = y, x = x)
+data$id <- as.factor(data$id)
+#個人固定効果モデルの推定
+model<- lm(y ~ x, data = data) #個人固定効果を抜いても推定可能
+summary(model)
+model_fe <- lm(y ~ x + id, data = data)
+summary(model_fe) #パラメーターは出せるが分散は計算不可能。
+#これは、誤差項の分散の不偏推定量である平均残差平方（MSE）の自由度がゼロになり、パラメーター推定値の漸近分散が導出できないから。
+model_fe <- feols(y ~ x | id, data = data) #within推定は不可能。
+#個人固定効果の推定結果の表示
+coef(model_fe)
+```
