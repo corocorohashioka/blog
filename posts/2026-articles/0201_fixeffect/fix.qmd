@@ -3,28 +3,55 @@ title: "個人固定効果の推定"
 author: "corocorohashioka"
 date: "2026-01-12"
 categories: [econometrics]
+format: html
 execute: 
-  echo: false
   warning: false
----
 
-計量経済学では、ダミー変数やWithin変換を用いて固定効果分析が行われる。一般的な推定では、固定効果は複数のobservationに対して一つ存在する。
-クロスセクションでは、固定効果の分析を行うことはできないのだろうか？以下、データを生成して回帰分析を回す。
+---
+# はじめに
+
+計量経済学ではよく固定効果分析が行われる。具体的には、固定効果は時間不変の固定効果やグループ内固定効果を含んだ分析が存在するが、これらを推計するための大原則として、一つのグループに複数のobservationが存在することが挙げられる。例えば、時間不変な固定効果を含む分析では、個人$i$に対して$T$期分のobservationが存在する。また、グループ内固定効果についてもグループ（クラスタとよく呼ばれる）内には複数のobservationが存在する。では、もしグループ内にobservationが一つしか存在しない場合、推計は行うことができるのか。本記事では、クロスセクションデータにおいて、グループ内のobservation数を調整することで考察する。
+
+# 理論
+グループ固定効果を含むモデルは以下のように示される。
+$$
+\begin{aligned}
+&y = X\beta + D\alpha + u　\\
+&u \sim N(0,\sigma^2I)
+\end{aligned}
+$$
+
+この場合、FWL定理より、$β$の推計値は以下のように示される。
+$$
+\begin{aligned}
+&\hat{\beta} = (X^{\prime}M_DX)^{-1}X^{\prime}M_Dy \\
+&M_D = I-D(D^{\prime}D)D^{\prime}
+\end{aligned}
+$$
+
+$M_D$はグループ内平均との差分行列であり、例えば、$X^{\prime}M_DX$を要素で表すと、以下のようになる。
+$$
+X^{\prime}M_DX = \sum_g^G\sum_{i\in{g}}(x_i-\bar{x}_g)(x_i-\bar{x}_g)^{\prime}
+$$
+
+もし、グループ内にobservationが一つしかない場合、$x_i-\bar{x}_g$が0となるので、識別ができなくなる。
+
+これをシミュレーションで回してみる。
+
 ```{r}
 library(dplyr)
 library(fixest)
 
 
 N <- 1000
+within <- 100
+group_id <- rep(seq(1, N/within, 1), each = within)
 indi <- rnorm(N, mean = 0, sd = 1)
 x <- rbinom(N, 3, 0.5)
 y <- 1 + 2 * x + indi + rnorm(N, mean = 0, sd = 1)
 data <- data.frame(id = 1:N, y = y, x = x)
 data$id <- as.factor(data$id)
-#個人固定効果モデルの推定
-model<- lm(y ~ x, data = data) #個人固定効果を抜いても推定可能
-model_fe <- lm(y ~ x + id, data = data)
-summary(model_fe) #パラメーターは出せるが分散は計算不可能。
+
 #これは、誤差項の分散の不偏推定量である平均残差平方（MSE）の自由度がゼロになり、パラメーター推定値の漸近分散が導出できないから。
 model_fe <- feols(y ~ x | id, data = data) #within推定は不可能。
 #個人固定効果の推定結果の表示
@@ -32,10 +59,29 @@ coef(model_fe)
 ```
 
 まず、固定効果を含めない回帰分析の結果を確認する。
+
 ```{r}
+model<- lm(y ~ x, data = data)
 summary(model)
 ```
 
-結果は切片とxの係数共に設定した係数と同じになっている。これは、indiとxが独立であるため、推定モデルからindiを欠落させても、欠落変数バイアスが発生しないためである。
+結果は切片とxの係数共に設定した係数と同じになっている。これは、indiとxが独立であるため、推定モデルからindiを欠落させても欠落変数バイアスが発生しないためである。
 
-次に、
+次に、固定効果を含めた推計を行う。
+
+```{r}
+model_fe <- lm(y ~ x + id, data = data)
+summary(model_fe)
+```
+
+この場合、係数は推計されるが標準誤差は推計されないようである。
+係数が推計されることは、OLS推定量の式と条件からわかる。OLS推定量は以下のように表すことができる。
+$$
+beta
+
+このxとyに行列を当てはめるだけで推定値は計算される。さらに、行列はランク落ちしないため多重共線性の問題もない。
+
+しかし、分散を計算する場合は話が違ってくる。
+この場合のβの漸近分散は以下のように与えられる。
+
+
