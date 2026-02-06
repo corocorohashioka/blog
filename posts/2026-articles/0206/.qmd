@@ -1,0 +1,10 @@
+---
+title: "リンデベルグの中心極限定理"
+author: "corocorohashioka"
+date: "2026-02-06"
+categories: [statistics,econometrics]
+execute: 
+  warning: false
+
+---
+中心極限定理（CLT: Central Limiting Theorem）は、確率変数の和に関して漸近分布を示すことができる重要な定理だ。しあし
