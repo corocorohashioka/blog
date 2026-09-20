@@ -1,2 +1,22 @@
 /.quarto/
 **/*.quarto_ipynb
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
+
+# Quarto のレンダリング成果物（Cloudflare へ直接デプロイするため git には置かない）
+/docs/
+/_freeze/
+
+# 写真・画像（容量が大きいため GitHub には置かない）
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.heic
+*.HEIC
