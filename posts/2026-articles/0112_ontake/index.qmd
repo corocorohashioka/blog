@@ -23,9 +23,9 @@ library(plotly)
 ## 御嶽山の登山ルート
 出発は木曽福島駅、登山口は王滝口、山頂は剣ヶ峰、下山は濁河温泉口、帰りは飛騨小坂駅とした。以下の地図は、GPXファイルから読み込んだ登山ルート（線データ）、通過する自治体（面データ）、および主要なポイント（点データ）を表示している。登山道の一部に高山市が含まれていることがポイント。
 ```{r}
-line_data <- read_sf("/Volumes/ASADA/others/gpx_map/202510ontake/Ontake.gpx",layer = "tracks")
-shichoson_geo <- read_sf("/Volumes/ASADA/others/shichoson/2019_isna/2019_summary_isna.shp")
-point <-read_sf("/Volumes/ASADA/others/gpx_map/202510ontake/ontake_point.geojson")
+line_data <- read_sf("materials/2026-articles/0112_ontake/Ontake.gpx",layer = "tracks")
+shichoson_geo <- read_sf("materials/shared/shichoson/2019_isna/2019_summary_isna.shp")
+point <-read_sf("materials/2026-articles/0112_ontake/ontake_point.geojson")
 line_data <- st_transform(line_data, st_crs(shichoson_geo))
 point <- st_transform(point, st_crs(shichoson_geo))
 point$name <- c("木曽福島駅","セブンイレブン木曽福島店","おんたけ高原温泉こもれびの湯", "道の駅木曽福島", "道の駅三岳", "御嶽山ビジターセンターやまテラス王滝", "展望台（東屋）","御嶽神社（王滝）遥拝所", "御嶽山王滝頂上(剣ヶ峰)","濁河温泉","ひめじゃがの湯","道の駅南飛騨小坂はなもも", "飛騨小坂駅")
@@ -65,7 +65,7 @@ mapview(
 御嶽山の登山ルートに沿った標高プロファイルを作成した。以下のグラフは、横軸に距離（km）、縦軸に標高（m）を示している。登山口から山頂までの距離は約3.4km、標高差は約800mであることがわかる。
 ```{r}
 # GPX のトラックポイントを読み込む
-track_points <- read_sf("/Volumes/ASADA/others/gpx_map/202510ontake/Ontake.gpx",
+track_points <- read_sf("materials/2026-articles/0112_ontake/Ontake.gpx",
                         layer = "track_points")
 
 track_points <- track_points %>%
