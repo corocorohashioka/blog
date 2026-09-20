@@ -20,3 +20,6 @@
 *.webp
 *.heic
 *.HEIC
+
+# macOS
+.DS_Store

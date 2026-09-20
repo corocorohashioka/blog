@@ -16,3 +16,8 @@ Judia Pearl、Madelyn Glymour、Nicholas P. Jewell『入門　統計的因果推
 
 
 
+
+## 写真
+写真は `materials/` 以下に、`posts/` と同じ階層構造で置いている。この記事なら `materials/2026-articles/0101_read_books/` が対応する。qmd からはプロジェクトルート起点のパス（先頭が `/`）で参照する。
+
+![テスト用画像（materials/ からの参照確認）](/materials/2026-articles/0101_read_books/test-photo.jpg){width=50% fig-align="center"}
