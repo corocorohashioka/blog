@@ -9,8 +9,8 @@
 <link>https://your-website-url.example.com/</link>
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog built with Quarto</description>
-<generator>quarto-1.8.27</generator>
-<lastBuildDate>Sun, 11 Jan 2026 15:00:00 GMT</lastBuildDate>
+<generator>quarto-1.8.21</generator>
+<lastBuildDate>Sun, 11 Jan 2026 16:00:00 GMT</lastBuildDate>
 <item>
   <title>2025年秋御嶽山</title>
   <dc:creator>corocorohashioka </dc:creator>
@@ -48,7 +48,7 @@
  ]]></description>
   <category>mountain</category>
   <guid>https://your-website-url.example.com/posts/2026-articles/0112_ontake/</guid>
-  <pubDate>Sun, 11 Jan 2026 15:00:00 GMT</pubDate>
+  <pubDate>Sun, 11 Jan 2026 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>個人固定効果の推定</title>
@@ -1281,12 +1281,38 @@ font-style: inherit;">#個人固定効果の推定結果の表示</span></span><
  ]]></description>
   <category>econometrics</category>
   <guid>https://your-website-url.example.com/posts/2026-articles/0201_fixeffect/fix.html</guid>
-  <pubDate>Sun, 11 Jan 2026 15:00:00 GMT</pubDate>
+  <pubDate>Sun, 11 Jan 2026 16:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>パッケージのconflictについて</title>
+  <dc:creator>corocorohashioka </dc:creator>
+  <link>https://your-website-url.example.com/posts/2026-articles/0225_conflict/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Rでは，しばし（まれに）パッケージのコンフリクトが起こる。パッケージ間のコンフリクトとは，同じ名前の関数が違うパッケージに含まれているがゆえに，意図したパッケージの関数を呼び出そうとしたときに意図していない別のパッケージの関数が呼び出されてしまう現象である。そうよく起こる現象ではないが，私のR環境ではしばし以下のようなコンフリクトが発生する。</p>
+<p>以下のコードでは，diamondsデータセットにdplyr::filter関数を適用して，価格がサンプル全体の平均未満のものを取り出そうとしているが，どうやらうまく行ってないらしい。 特に，dplyr::filterの第一引数はこの場合dataset内の変数をとるはずだが，errorメッセージを見る限り，objectを認識しようとしている。このことから，呼び出されている関数がdplyr::filterではなく，他のパッケージのfilterである可能性が示唆される。</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "package:dplyr" "package:stats"</code></pre>
+</div>
+</div>
+<p>実際に，環境内の変数を調べると，stats::filterがdplyr::filterより先に呼び出されるようである。</p>
+
+
+
+ ]]></description>
+  <category>mountain</category>
+  <guid>https://your-website-url.example.com/posts/2026-articles/0225_conflict/</guid>
+  <pubDate>Sun, 11 Jan 2026 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>2026年に読んだ本</title>
   <dc:creator>corocorohashioka </dc:creator>
-  <link>https://your-website-url.example.com/posts/2026-articles/welcome/</link>
+  <link>https://your-website-url.example.com/posts/2026-articles/0101_read_books/</link>
   <description><![CDATA[ 
 
 
@@ -1295,16 +1321,16 @@ font-style: inherit;">#個人固定効果の推定結果の表示</span></span><
 
 <section id="このページについて" class="level1">
 <h1>このページについて</h1>
-<p>2026年に読んだ本を箇条書きベースで並べる。全ての本を完読している訳ではないので注意。 詳しい感想をここには記さないが、感想が書きたくなった本はその都度別ページで感想を書こうと思う。</p>
-<p>ダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史　上』鬼澤忍・塩原通緒訳、早川書房、2023年。</p>
+<p>2026年に読んだ本を箇条書きベースで並べる。全ての本を完読している訳ではないので注意（むしろ全て読んでいる本のほうが少ない）。 詳しい感想をここには記さないが、感想が書きたくなった本はその都度別ページで感想を書こうと思う。</p>
+<p>Daron Acemoglu、Simon Johnson『技術革新と不平等の1000年史　上・下』鬼澤忍、塩原通緒訳、早川書房、2023年。 星野匡郎『統計的仮説検定の方法論』、日本評論社、2025年。 Paul Krugman『脱「国境」の経済学』北村行伸、高橋亘、妹尾美起訳、東洋経済、遠井洋経済新聞社、1994年。 Judia Pearl、Madelyn Glymour、Nicholas P. Jewell『入門　統計的因果推論』落海浩訳、2019年。</p>
 
 
 </section>
 
  ]]></description>
   <category>news</category>
-  <guid>https://your-website-url.example.com/posts/2026-articles/welcome/</guid>
-  <pubDate>Sun, 04 Jan 2026 15:00:00 GMT</pubDate>
+  <guid>https://your-website-url.example.com/posts/2026-articles/0101_read_books/</guid>
+  <pubDate>Sun, 04 Jan 2026 16:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
