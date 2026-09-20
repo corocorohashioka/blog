@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.21">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="corocorohashioka">
-<meta name="dcterms.date" content="2026-01-05">
+<meta name="dcterms.date" content="2026-01-12">
 
-<title>2026年に読んだ本 – blog</title>
+<title>パッケージのconflictについて – blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ea1d7ac60288e0f1efdbc993fd8432ae.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -82,6 +82,8 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">blog</span>
     </a>
@@ -117,9 +119,9 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">2026年に読んだ本</h1>
+      <h1 class="title">パッケージのconflictについて</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">news</div>
+                <div class="quarto-category">mountain</div>
               </div>
                   </div>
   </div>
@@ -137,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 5, 2026</p>
+        <p class="date">January 12, 2026</p>
       </div>
     </div>
     
@@ -156,13 +158,16 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="このページについて" class="level1">
-<h1>このページについて</h1>
-<p>2026年に読んだ本を箇条書きベースで並べる。全ての本を完読している訳ではないので注意。 詳しい感想をここには記さないが、感想が書きたくなった本はその都度別ページで感想を書こうと思う。</p>
-<p>ダロン・アセモグル・サイモン・ジョンソン『技術革新と不平等の1000年史　上』鬼澤忍・塩原通緒訳、早川書房、2023年。</p>
+<p>Rでは，しばし（まれに）パッケージのコンフリクトが起こる。パッケージ間のコンフリクトとは，同じ名前の関数が違うパッケージに含まれているがゆえに，意図したパッケージの関数を呼び出そうとしたときに意図していない別のパッケージの関数が呼び出されてしまう現象である。そうよく起こる現象ではないが，私のR環境ではしばし以下のようなコンフリクトが発生する。</p>
+<p>以下のコードでは，diamondsデータセットにdplyr::filter関数を適用して，価格がサンプル全体の平均未満のものを取り出そうとしているが，どうやらうまく行ってないらしい。 特に，dplyr::filterの第一引数はこの場合dataset内の変数をとるはずだが，errorメッセージを見る限り，objectを認識しようとしている。このことから，呼び出されている関数がdplyr::filterではなく，他のパッケージのfilterである可能性が示唆される。</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "package:dplyr" "package:stats"</code></pre>
+</div>
+</div>
+<p>実際に，環境内の変数を調べると，stats::filterがdplyr::filterより先に呼び出されるようである。</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -216,14 +221,13 @@ ul.task-list li input[type="checkbox"] {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
