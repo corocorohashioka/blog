@@ -23,3 +23,14 @@
 
 # macOS
 .DS_Store
+
+# 地理データ等（容量が大きいため GitHub には置かない）
+*.gpx
+*.geojson
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
