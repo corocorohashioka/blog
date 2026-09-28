@@ -31,6 +31,8 @@ point <- st_transform(point, st_crs(shichoson_geo))
 point$name <- c("木曽福島駅","セブンイレブン木曽福島店","おんたけ高原温泉こもれびの湯", "道の駅木曽福島", "道の駅三岳", "御嶽山ビジターセンターやまテラス王滝", "展望台（東屋）","御嶽神社（王滝）遥拝所", "御嶽山王滝頂上(剣ヶ峰)","濁河温泉","ひめじゃがの湯","道の駅南飛騨小坂はなもも", "飛騨小坂駅")
 intersections <- st_intersects(shichoson_geo, line_data, sparse = FALSE) %>% which(. == TRUE)
 shichoson_geo <- shichoson_geo[intersections, ]
+# 境界を簡略化してHTMLサイズを削減（許容誤差30m）
+shichoson_geo <- st_simplify(shichoson_geo, dTolerance = 30, preserveTopology = TRUE)
 mapview(
   shichoson_geo,
   popup = NA,

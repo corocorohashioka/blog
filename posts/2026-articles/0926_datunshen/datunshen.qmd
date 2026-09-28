@@ -3,7 +3,7 @@ title: "大屯山登山"
 author: "corocorohashioka"
 date: "2026-09-26"
 categories: [mountain]
-image: /materials/2026-articles/0926_datunshen/IMG_0457.JPG
+image: /materials/2026-articles/0926_datunshen/thumb.webp
 toc: true
 toc-depth: 3
 lightbox: auto
@@ -23,80 +23,80 @@ execute:
 
 ## 記録
 
-![スタート駅](/materials/2026-articles/0926_datunshen/IMG_0457.JPG){width=100% fig-align="center"}
+![スタート駅](/materials/2026-articles/0926_datunshen/IMG_0457.webp){width=100% fig-align="center"}
 
 自宅の最寄り駅を6:30に出発しました。台北捷運は6:00からしか運行しておらず，朝が早いがちなoutdoor勢からするとちょっと不便です。
 
 
-![登り口の最寄り駅](/materials/2026-articles/0926_datunshen/IMG_0460.JPG){width=100% fig-align="center"}
+![登り口の最寄り駅](/materials/2026-articles/0926_datunshen/IMG_0460.webp){width=100% fig-align="center" loading="lazy"}
 
 中正記念堂駅で淡水信義線に乗り換え，復興崗駅で下車しました。陽明山からは遠いですが，淡水河から陽明山に向かう稜線にアクセスしやすい上に駅前にコンビニやご飯屋があるので便利です。なお，その稜線は台北大縦走トレイルのルートですが，スタート地点は2駅先の關渡駅からなので，トレイルコースをコンプリートしたい場合は關渡駅からスタートするのが良いです。關渡駅からだと，最初の舗装路パートが長くなるのでぼくはこのルートを選びました。
 
-![早速山に入る](/materials/2026-articles/0926_datunshen/IMG_0461.JPG){width=100% fig-align="center"}
+![早速山に入る](/materials/2026-articles/0926_datunshen/IMG_0461.webp){width=100% fig-align="center" loading="lazy"}
 
 駅から5分ほどで山に入れます。最初200upほどは稜線までの急登で緑たっぷりの森の中です。とにかく，この辺は蒸し暑いのでサウナです。9月中旬の台北はまだ30℃近くあり，湿度も高いので，登山道に入る前に水分をしっかり補給しておく必要があります。
 
-![](/materials/2026-articles/0926_datunshen/IMG_0465.JPG){width=100% fig-align="center"}
+![](/materials/2026-articles/0926_datunshen/IMG_0465.webp){width=100% fig-align="center" loading="lazy"}
 
 歩いて30分弱で稜線に出ました。おそらく關渡駅から登っているのであろう人がかなりいました。
 
 ::: {layout-ncol=2}
-![](/materials/2026-articles/0926_datunshen/IMG_0475.JPG){width=100% fig-align="center"}
+![](/materials/2026-articles/0926_datunshen/IMG_0475.webp){width=100% fig-align="center" loading="lazy"}
 
-![](/materials/2026-articles/0926_datunshen/IMG_0476.JPG){width=100% fig-align="center"}
+![](/materials/2026-articles/0926_datunshen/IMG_0476.webp){width=100% fig-align="center" loading="lazy"}
 :::
 
 途中で，皇太子殿下行啟記念碑なるものを見つけました。皇太子殿下時代の裕仁様が台湾に来た際に，この辺を散策したことを記念した碑のようです。実際に建てられたのは裕仁様が結婚されたときのようです。同様の碑は台湾各地にあるようですが，第二次世界大戦終了後にかなりの数が取り壊され，残っているものは少ないようです。
 
-![大屯山鞍部](/materials/2026-articles/0926_datunshen/IMG_0478.JPG){width=100% fig-align="center"}
+![大屯山鞍部](/materials/2026-articles/0926_datunshen/IMG_0478.webp){width=100% fig-align="center" loading="lazy"}
 
 もうしばらく登ると，大きな東屋の休憩地点に到着します。どうやらここは，稜線の鞍部になっており，各山の頂上に向かう登山道の交差点のようです。
 
 ::: {layout-ncol=2}
-![](/materials/2026-articles/0926_datunshen/IMG_0480.JPG){width=100% fig-align="center"}
+![](/materials/2026-articles/0926_datunshen/IMG_0480.webp){width=100% fig-align="center" loading="lazy"}
 
-![](/materials/2026-articles/0926_datunshen/IMG_0481.JPG){width=100% fig-align="center"}
+![](/materials/2026-articles/0926_datunshen/IMG_0481.webp){width=100% fig-align="center" loading="lazy"}
 :::
 
 ここは面天坪と呼ばれる場所で，西には面天山，東には大屯山があります。地図の右上の二子坪は台北市街からバスでアクセスしやすので，二子坪から二子坪歩道を経由して面天坪，そして大屯山へぐるっと一周するルートも良いと思います。
 
-![面天坪からは険しい道になる](/materials/2026-articles/0926_datunshen/IMG_0482.JPG){width=100% fig-align="center"}
+![面天坪からは険しい道になる](/materials/2026-articles/0926_datunshen/IMG_0482.webp){width=100% fig-align="center" loading="lazy"}
 
 面天坪から大屯山の頂上に向けて登っていきますが，かなり険しいです。大きな岩を登るためにロープが吊り下げられています。
 
 ::: {layout-ncol=2}
-![南峰頂上](/materials/2026-articles/0926_datunshen/IMG_0485.JPG){width=100% fig-align="center"}
+![南峰頂上](/materials/2026-articles/0926_datunshen/IMG_0485.webp){width=100% fig-align="center" loading="lazy"}
 
-![北方](/materials/2026-articles/0926_datunshen/IMG_0484.JPG){width=100% fig-align="center"}
+![北方](/materials/2026-articles/0926_datunshen/IMG_0484.webp){width=100% fig-align="center" loading="lazy"}
 :::
 
 面天坪から40分ほど登ると，頂上に到着しました。視界がひらけた素晴らしい頂上です。北には陽明山の山裾が海まで広がっているエリアが見ることができます。あの辺に台湾島最北端があります。全体的に大きな岩がゴロゴロいることや，北の半島の感じがすごく火山っぽいですね。
 
-![](/materials/2026-articles/0926_datunshen/IMG_0491.JPG){width=100% fig-align="center"}
+![](/materials/2026-articles/0926_datunshen/IMG_0491.webp){width=100% fig-align="center" loading="lazy"}
 
 西峰から南峰，主峰方面を目指します。写真にあるのは主峰です。西峰からのダウンがかなり急で神経を使いました。登りは急でもいいんですが，下りは緩やかであって欲しいです。
 
 ::: {layout-ncol=2}
-![森の中の急登](/materials/2026-articles/0926_datunshen/IMG_0488.JPG){width=100% fig-align="center"}
+![森の中の急登](/materials/2026-articles/0926_datunshen/IMG_0488.webp){width=100% fig-align="center" loading="lazy"}
 
-![台北市と新北市を望む](/materials/2026-articles/0926_datunshen/IMG_0495.JPG){width=100% fig-align="center"}
+![台北市と新北市を望む](/materials/2026-articles/0926_datunshen/IMG_0495.webp){width=100% fig-align="center" loading="lazy"}
 :::
 
 森林帯は相変わらず急な道のりが続きました。しかし，森林帯から抜けると見晴らしが良くなり，登っている途中に振り返りながら何度も写真を撮りました。写真に見える町並みは台北市と新北市です。
 
-![大屯山頂上](/materials/2026-articles/0926_datunshen/IMG_0497.JPG){width=100% fig-align="center"}
+![大屯山頂上](/materials/2026-articles/0926_datunshen/IMG_0497.webp){width=100% fig-align="center" loading="lazy"}
 
 ついに，頂上に到着しました。MRTの駅からちょうど3時間ほどでした。頂上まで二子坪から舗装路が伸びているようで，サイクリストが沢山いました。テラスみたいなものが整備されていて，町並みを一望できます。標高が1093mもあって涼しい上に，海側から風が吹いてきて心地よいです。
 
-![二子坪登山口](/materials/2026-articles/0926_datunshen/IMG_0499.JPG){width=100% fig-align="center"}
+![二子坪登山口](/materials/2026-articles/0926_datunshen/IMG_0499.webp){width=100% fig-align="center" loading="lazy"}
 
 頂上から舗装路の横に続く山道を30分ほど下り，二子坪登山口に到着しました。コーラを飲みたかったのですが自販機がなく，さらに小さい売店に置いてあるものがご当地アイスや高そうなジュースばかりだったので，ご当地アイスで我慢しました（美味しかったです）。登山する人よりもサイクリストの方が多い印象です。標高が800mほどあるので，市内から足を伸ばすには丁度良いのでしょうか。今度，市内からここまで漕いだ後に，更に北上して台湾島最北端を目指すルートを考えたので実行したいと思います。帰りは淡水でコーヒーをしばいた後にメトロ輪行ですかね。
 
-![帰りのバス（途中で乗り換え）](/materials/2026-articles/0926_datunshen/IMG_0501.JPG){width=100% fig-align="center"}
+![帰りのバス（途中で乗り換え）](/materials/2026-articles/0926_datunshen/IMG_0501.webp){width=100% fig-align="center" loading="lazy"}
 
 さて，ここから捷運の駅までバスを使うわけですが，ここからが大変でした。二子坪から直接下界の駅まで行くバスはなく，途中陽明山というバス停で乗り換えする必要があります。案内通り108番のバスに乗ったのですが，実は直接行くやつ（108區）と周辺の登山口に寄り道しまくるやつの2種類のバスがあり，後者に乗ってしまいました。所要時間が20分ほど長く，かつ険しい山道を進むバスで乗りごごちが非常に悪かったです。短い方が快適なので早く帰りたければ108區に乗りましょう。
 
-![駅に到着](/materials/2026-articles/0926_datunshen/IMG_0506.JPG){width=100% fig-align="center"}
+![駅に到着](/materials/2026-articles/0926_datunshen/IMG_0506.webp){width=100% fig-align="center" loading="lazy"}
 
 1時間半ほどで下界の士林駅に到着しました。駅前の全家（FamilyMart）でコーラを買いました。MRTは飲食禁止で，飲み物を持っていると自分は無意識に間違えて飲み物を飲んでしまいそうなので，頑張って飲み干しました。
 
