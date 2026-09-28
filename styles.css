@@ -28,3 +28,12 @@ figcaption {
   text-align: justify;
   text-justify: inter-character;
 }
+
+/* about ページの大きな写真
+   - 本文の幅いっぱいに表示し、角を少し丸める */
+.about-hero {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
