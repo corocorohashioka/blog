@@ -7,7 +7,7 @@ image: /materials/2026-articles/0926_datunshen/IMG_0457.JPG
 toc: true
 toc-depth: 3
 lightbox: auto
-draft: true
+draft: false
 execute:
   echo: false
   warning: false
