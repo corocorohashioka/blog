@@ -5,6 +5,7 @@ date: "2026-01-12"
 categories: [econometrics]
 execute: 
   warning: false
+draft: true
 
 ---
 # はじめに
