@@ -1,1 +1,30 @@
 /* css styles */
+
+/* 画像キャプション
+   - 文字サイズ: デフォルト 0.9rem より大きく、本文 1rem より小さい 0.95rem
+   - 位置: 画像の下・中央
+   - 画像との間隔: デフォルトより狭くする */
+figcaption {
+  font-size: 0.95rem;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+/* 画像とキャプションの間にできる余白を詰める */
+.quarto-figure > figure.figure,
+.quarto-figure > figure.figure > p {
+  margin-bottom: 0;
+}
+
+.quarto-figure .figure-img {
+  margin-bottom: 0;
+  vertical-align: bottom; /* 画像下の行間由来のすき間を消す */
+}
+
+/* 本文の行末を揃える（両端揃え）
+   - 日本語は文字間で調整する
+   - キャプションは中央寄せのままにするため本文の段落だけに適用 */
+#quarto-document-content p {
+  text-align: justify;
+  text-justify: inter-character;
+}

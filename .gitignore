@@ -37,3 +37,10 @@
 
 # 運用手順（手元のみ・GitHub には置かない）
 README.md
+
+# _ 始まりフォルダ（テンプレート・下書き）をプレビューした際の出力。
+# ソースの .qmd の隣に出るだけで、docs/ には入らないので公開もされない。
+/posts/**/_*/index.html
+/posts/**/_*/index_files/
+/posts/_template/index.html
+/posts/_template/index_files/

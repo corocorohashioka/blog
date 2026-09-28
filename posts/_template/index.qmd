@@ -1,0 +1,333 @@
+---
+title: "記事のタイトル"
+subtitle: "サブタイトル（不要ならこの行を削除）"
+author: "corocorohashioka"
+date: "2026-09-26"
+categories: [mountain]
+image: /materials/2026-articles/0926_sample/thumb.jpg
+image-alt: "一覧に出るサムネイルの説明"
+description: "一覧ページの記事カードに出る短い紹介文。省略すると本文冒頭が使われる。"
+toc: true
+toc-depth: 3
+lightbox: auto
+draft: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<!--
+==========================================================================
+ 使い方
+
+ 1. このディレクトリごとコピーして記事を作る
+      cp -r posts/_template posts/2026-articles/1005_myride
+ 2. 素材置き場も同じ名前で作る
+      mkdir -p materials/2026-articles/1005_myride
+ 3. 上の YAML を書き換え、下の「本文ここから」以降を自分の記事にする
+ 4. 「構文リファレンス」の節はまるごと削除する
+ 5. 公開できる状態になったら YAML の draft: true を消す
+
+ このファイル自身はサイトに出ない（posts/_template/ が _ 始まりのため
+ Quarto のプロジェクトレンダーから除外される）。
+ 手元でプレビューしたいときだけ
+      quarto render posts/_template/index.qmd
+ 出力は docs/ ではなく posts/_template/index.html に出るので公開されない。
+
+ YAML の各キー
+   title/subtitle  ページ見出し。title-block-banner は _quarto.yml で有効
+   date            一覧の並び順キー。"YYYY-MM-DD"
+   categories      一覧の絞り込みタグ。既存は [mountain] [news] [econometrics]
+   image           一覧カードのサムネイル。/materials/... から書く
+   description     一覧カードの説明文
+   toc             右側の目次。短い記事なら false でよい
+   lightbox: auto  写真をクリックで拡大表示できるようにする
+   draft: true     一覧に出さない（ただし URL を直接叩けば読めるので非公開ではない）
+   execute         echo:false でコードを隠し、結果だけ出す
+==========================================================================
+-->
+
+<!-- ===================== 本文ここから ===================== -->
+
+導入の段落をここに書く。
+
+## 大きな節（見出しレベル2）
+
+本文。
+
+### 小さな節（見出しレベル3）
+
+本文。
+
+<!-- ===================== 本文ここまで ===================== -->
+
+
+# 構文リファレンス（記事を書いたらこの節以下は削除する）
+
+::: {.callout-important}
+## このページの例をコピーするときの注意
+
+**レンダーされたページに表示されている形が正しい。**
+この `.qmd` のソースから直接コピーすると、次の4点でソースと表示が食い違う。
+
+1. 例を囲んでいる**バッククォート4つの外枠は「例として見せる」ためだけのもの**。
+   内側のブロックだけをコピーする。外枠ごと貼ると、埋め込みが動かずコードが記事にそのまま表示される
+2. R チャンクの例は、ソースでは波かっこが**二重**になっている。実際に書くときは一重
+3. YouTube の例は、ソースでは山かっこの外側が**三重**になっている。実際に書くときは二重
+4. `＜ルートID＞` のような**全角かっこは目印なので、かっこごと消して ID だけを残す**。
+   誤: `data-embed-id="＜20151961600＞"` / 正: `data-embed-id="20151961600"`
+:::
+
+## 1. 見出し
+
+`#`（レベル1）は YAML の title が使うので**本文では使わない**。`##` から始める。
+
+```markdown
+## 大きな節
+### 小さな節
+#### さらに小さな節
+```
+
+**`#` の後ろは半角スペースにする。** 全角スペースだと見出しとして認識されず、
+`## 記録` がそのまま本文に表示される（日本語入力のままだと起きやすい）。
+
+見出しは自動でリンクアンカーが付く。`## 装備 {#sec-gear}` のように ID を付けると
+本文から `[装備](#sec-gear)` で参照できる。
+
+## 2. 文字の効果
+
+書き方と表示結果を並べる。
+
+| 書き方 | 表示 |
+|---|---|
+| `**太字**` | **太字** |
+| `*斜体*` | *斜体* |
+| `***太字斜体***` | ***太字斜体*** |
+| `~~打ち消し~~` | ~~打ち消し~~ |
+| `` `等幅（コード）` `` | `等幅（コード）` |
+| `[下線]{.underline}` | [下線]{.underline} |
+| `[ハイライト]{.mark}` | [ハイライト]{.mark} |
+| `[赤字]{style="color:#c00"}` | [赤字]{style="color:#c00"} |
+| `[大きめ]{style="font-size:1.4em"}` | [大きめ]{style="font-size:1.4em"} |
+| `10^2^` | 10^2^ |
+| `H~2~O` | H~2~O |
+| `$E=mc^2$` | $E=mc^2$ |
+
+`==ハイライト==` という書き方は**このままでは効かない**（そのまま `==` が表示される）。
+使いたい場合は YAML に `from: markdown+mark` を足す。足さないなら `[...]{.mark}` を使う。
+
+改行は行末に半角スペース2つ、または空行で段落を分ける。
+
+### リンク・脚注・引用
+
+```markdown
+[表示テキスト](https://example.com)
+脚注を付ける[^1]
+
+[^1]: 脚注の中身。ページ下部にまとまる。
+
+> 引用ブロック。
+> 複数行書ける。
+```
+
+[表示テキスト](https://example.com) 脚注を付ける[^1]
+
+[^1]: 脚注の中身。ページ下部にまとまる。
+
+> 引用ブロック。
+
+### リスト
+
+```markdown
+- 箇条書き
+  - 入れ子は半角スペース2つ下げ
+
+1. 番号付き
+2. 次の項目
+
+- [ ] チェックボックス（未完了）
+- [x] チェックボックス（完了）
+```
+
+- 箇条書き
+  - 入れ子
+- [x] チェックボックス（完了）
+
+### 囲み（callout）
+
+```markdown
+::: {.callout-note}
+## 見出し（省略可）
+補足やメモ。
+:::
+```
+
+種類は `note` `tip` `important` `warning` `caution` の5つ。
+`collapse="true"` を足すと折りたたみになる。
+
+::: {.callout-note}
+## メモ
+callout-note の表示例。
+:::
+
+::: {.callout-warning collapse="true"}
+## 折りたたみの注意書き
+クリックで開く。
+:::
+
+### 表
+
+```markdown
+| 日付 | 距離 | 獲得標高 |
+|---|---:|---:|
+| 10/5 | 82 km | 1,240 m |
+```
+
+`---:` で右寄せ、`:---:` で中央寄せ。
+
+### 区切り線
+
+`---` を単独行に書くと水平線になる。
+
+## 3. 写真
+
+**画像は `/materials/...` と先頭にスラッシュを付けて書く。** 起点はプロジェクトルート。
+R が読むデータファイルだけはスラッシュを付けない（`read_sf("materials/...")`）。
+この違いは README の「2. 写真とデータの参照方法」を参照。
+
+```markdown
+![剣ヶ峰からの眺め](/materials/2026-articles/1005_myride/summit.jpg){width=50% fig-align="center"}
+```
+
+- `width=50%` 表示幅。`70%` `400px` などでも可
+- `fig-align="center"` 中央寄せ。`left` `right` も可
+- `[]` を空にするとキャプション無しで表示される
+- キャプションを付けたくないがスクリーンリーダー用の説明を入れたいときは
+  `![](/materials/.../photo.jpg){fig-alt="雪をかぶった山頂"}`
+- YAML に `lightbox: auto` があるのでクリックで拡大表示される
+
+### 横並び
+
+```markdown
+::: {layout-ncol=2}
+![登り](/materials/2026-articles/1005_myride/up.jpg)
+
+![下り](/materials/2026-articles/1005_myride/down.jpg)
+:::
+```
+
+`layout-ncol=3` で3枚並び。画像の間の空行は必須。
+
+### 写真で注意すること
+
+- **HEIC は使えない。** ブラウザが表示できないので jpg か png に変換する
+  （`sips -s format jpeg photo.heic --out photo.jpg`）
+- 写真は `.gitignore` 対象なので **git のバックアップに入らない**。Time Machine 等で別途確保する
+- Cloudflare の上限は1ファイル 25 MiB。スマホの写真ならまず問題にならない
+- 写真を差し替えても `git status` には出ない（gitignore のため）
+
+## 4. Ride with GPS の埋め込み
+
+ルートページの共有メニューから埋め込みコードを取り、ID を差し替える。
+
+````markdown
+```{=html}
+<iframe src="https://ridewithgps.com/embeds?type=route&id=＜ルートID＞&sampleGraph=true"
+        style="width:1px;min-width:100%;height:500px;border:none"
+        loading="lazy" allowfullscreen></iframe>
+```
+````
+
+- `type=route` はルート、`type=trip` は走行記録
+- `sampleGraph=true` で標高グラフが付く
+- `width:1px;min-width:100%` はスマホで横幅がはみ出すのを防ぐ書き方
+- `height` は好みで調整する（400〜600px あたり）
+
+## 5. Strava の埋め込み
+
+アクティビティページの共有メニューから埋め込みコードを取り、ID を差し替える。
+
+````markdown
+```{=html}
+<div class="strava-embed-placeholder"
+     data-embed-type="activity"
+     data-embed-id="＜アクティビティID＞"
+     data-style="standard"></div>
+<script src="https://strava-embeds.com/embed.js"></script>
+```
+````
+
+- `data-embed-type` は `activity`（走行記録）または `route`（ルート）
+- **アクティビティが公開設定でないと読者には表示されない**
+- script 方式なので、読者のブラウザで JavaScript が無効だと何も出ない
+- 同じページに複数貼る場合、`<script>` の行は1回だけでよい
+
+## 6. その他の埋め込み
+
+YouTube は Quarto の専用記法が使える。
+
+```markdown
+{{{< video https://www.youtube.com/watch?v=xxxxxxxxxxx >}}}
+```
+
+その他の iframe（Google マップ等）は `{=html}` ブロックにそのまま貼る。
+縦横比を保って可変幅にしたいときは Bootstrap のクラスで囲む。
+
+````markdown
+::: {.ratio .ratio-16x9}
+```{=html}
+<iframe src="https://＜埋め込み先＞" style="border:none" loading="lazy"></iframe>
+```
+:::
+````
+
+### 埋め込みと自作地図の使い分け
+
+| | 自作 GPX 地図（R） | Strava / RWGPS 埋め込み |
+|---|---|---|
+| 外部サービスへの依存 | なし | あり（仕様変更で消えることがある） |
+| 別デバイスで `quarto render` | 不可（GPX が clone されない） | **可**（素材が要らない） |
+| 見た目 | 自由に調整できる | 先方のデザイン固定 |
+| 読者への第三者送信 | なし | Cookie・追跡が入る |
+
+## 7. GPX から自分で地図を描く
+
+`materials/` に置いた GPX を R で読んで地図にする。**R のパスは先頭スラッシュ無し。**
+動く実例は `posts/2026-articles/0112_ontake/index.qmd` にある。
+
+````markdown
+```{{r}}
+#| output: false
+library(sf)
+library(mapview)
+library(tidyverse)
+```
+
+```{{r}}
+route <- read_sf("materials/2026-articles/1005_myride/ride.gpx", layer = "tracks")
+mapview(route, legend = FALSE, lwd = 3, map.types = "OpenStreetMap")
+```
+````
+
+標高プロファイル（`track_points` レイヤと `geosphere::distGeo()` で距離を積算し plotly で描く）も
+御嶽山の記事に実例がある。
+
+注意点。
+
+- GPX ファイル自体は公開されないが、**mapview は軌跡の座標を HTML の中に埋め込む**ので
+  軌跡そのものは公開される。自宅発着のログは前後をトリミングしておく
+- 点数の多い GPX をそのまま埋めると HTML が重くなる。`st_simplify()` で間引く
+- `posts/_metadata.yml` で `freeze: true` なので、**本文を1文字直すだけでも R が再実行される**
+
+## 8. 書けたら公開する
+
+```bash
+cd ~/Documents/blog
+quarto render
+npx wrangler pages deploy docs --project-name=corocorohashioka --branch=main --commit-dirty=true
+git add -A && git commit -m "記事を追加" && git push
+```
+
+`quarto render` と `wrangler pages deploy` が公開の本体。`git push` はソースのバックアップ。
+**公開は必ずメイン Mac から行う**（写真とデータが揃っているのはメイン Mac だけ）。
