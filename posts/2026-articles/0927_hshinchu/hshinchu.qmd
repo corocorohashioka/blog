@@ -105,6 +105,7 @@ execute:
 峠に到着しました。結構自転車で登っている人がいます。県境でも何でもないので，目印っぽい看板はありませんでした。ただ，頂上にカフェや屋台がちょこちょこあり，賑やかそうな場所ではありました。何も買いませんでしたが。
 
 ↓GoogleMapでこの辺りです。
+
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d8818.816420976082!2d121.2792530377596!3d24.667652952917283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34686a8a79a81fc9%3A0x89c0106de41acbb2!2z5a6H6ICB6Kaz5pmv5Y-w!5e1!3m2!1sja!2sjp!4v1791100533116!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 ![やまなみ](/materials/2026-articles/0927_hshinchu/bike_clean.webp){width=100% fig-align="center"}
