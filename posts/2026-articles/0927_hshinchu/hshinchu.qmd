@@ -1,0 +1,51 @@
+---
+title: "北部山間サイクリング（北横大路）"
+author: "corocorohashioka"
+date: "2026-10-04"
+categories: [cycling][taiwan]
+image: /materials/2026-articles/0926_sample/thumb.jpg
+toc: true
+toc-depth: 3
+lightbox: auto
+draft: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+台湾を南北に貫く中央山脈は険しい。特に，中央部は常に標高2000mを越えており，さらに東西に伸びる谷は深く，人を簡単には寄せ付けない渓谷地帯となっている。そんな渓谷をいく貴重な舗装路が台湾には数本だけ存在するのだが，そのうち一本を自転車で走ることにした。
+
+## ログ
+<div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="20348775071" data-style="standard" data-from-embed="false" data-token="ob7hO4M2mX-oWx5XyCHb30KyQ4xbMvWAcxmquxipxBg"></div><script src="https://strava-embeds.com/embed.js"></script>
+
+後述するが，実際の計画とは異なるルートを走ったため，距離は約133.2km，獲得標高は約2662mとなった。
+ダイナミックな渓谷を走った割に獲得標高が少なめなのが良かった。距離に関しては，ルート変更後の進路に手頃な鉄道駅がなく，結果的に自宅付近まで走ることになったため距離が伸びた。台湾は長距離移動に適した鉄道網が整備されている一方で，都市部内ではそれほど鉄道網が発達しているわけではないため，サイクリング終盤で都市部に入ったとしても鉄道駅まで長いということがある。うまくやれば簡単に鉄道駅に到達できるのだが，今回はうまくいかなかった。
+
+##　地図
+
+## ログ
+###　移動
+:::[layout-ncol=2]
+![早朝の台北市内](/materials/2026-articles/0927_hshinchu/IMG_0653.webp){width=100% fig-align="center"}
+
+![中正記念堂](/materials/2026-articles/0927_hshinchu/IMG_0655.webp){width=100% fig-align="center"}
+:::
+
+台北駅からサイクリングのスタート地点まで電車で移動する。今回予約した電車は台北駅を5:59に出発する電車である。毎回のごとく，MRTの始発が6時なので，台北駅まで自走する他ない。早朝の台北市内の道路は空いており，快適に走ることができた。中正記念堂はライトアップや雰囲気ゆえ夜も良いらしいが，早朝にもなると逆に何もなくてよく分からない。
+
+:::[layout-ncol=2]
+![立派な駅舎](/materials/2026-articles/0927_hshinchu/IMG_0656.webp){width=100% fig-align="center"}
+
+![一階中央広場](/materials/2026-articles/0927_hshinchu/IMG_0657.webp){width=100% fig-align="center"}
+:::
+
+台北駅は立派な駅舎で，中も広く中央広場もある。中央広場に昼間に行くと，列車を待っているのであろう人が大量に地べたに座ったり寝転んだりしているのだが，早朝に来ても少々人がいた。
+
+:::[layout-ncol=2]
+![環島列車](/materials/2026-articles/0927_hshinchu/DSCF8672.webp){width=100% fig-align="center"}
+
+![自強号がホームに入線する](/materials/2026-articles/0927_hshinchu/DSCF8676.webp){width=100% fig-align="center"}
+:::
+
+地下ホームに降りると，環島列車が停車していた。環島列車は台湾を一周する観光列車で，きょうこう号に充当される車両がサンリオキャラクターとコラボしたラッピングと内装になっている。1日で一周できるのだが，途中下車できる時間が少なく耐久の様相を呈するので（少なくとも筆者は嫌だ），南部まで利用して一泊するなりした後に別の特急列車で帰るのが良さそう。これで西回りで台東や花蓮まで行き下車して観光したのちに，普悠瑪号で台北に戻る行程を行いたい。

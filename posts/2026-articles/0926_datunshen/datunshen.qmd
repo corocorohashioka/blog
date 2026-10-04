@@ -2,7 +2,7 @@
 title: "大屯山登山"
 author: "corocorohashioka"
 date: "2026-09-26"
-categories: [mountain]
+categories: [mountain][taiwan]
 image: /materials/2026-articles/0926_datunshen/thumb.webp
 toc: true
 toc-depth: 3
