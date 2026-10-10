@@ -14,7 +14,7 @@ execute:
   message: false
 ---
 
-台湾を南北に貫く中央山脈は険しいです。特に，中央部は常に標高2000mを超えており，さらに東西に伸びる谷は深く，人を簡単には寄せ付けない渓谷地帯となっています。そんな渓谷を行く貴重な舗装路が台湾には数本だけ存在するのですが，そのうちの一本を自転車で走ることにしました。
+台湾を南北に貫く中央山脈は険しいです。特に，中央部は常に標高2000mを超えており，東西に伸びる谷は深く人を簡単には寄せ付けない渓谷地帯となっています。そんな渓谷を行き稜線を越える貴重な舗装路が台湾には数本だけ存在するのですが，そのうちの一本を自転車で走ることにしました。
 
 ## ログ
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="20348775071" data-style="standard" data-from-embed="false" data-token="ob7hO4M2mX-oWx5XyCHb30KyQ4xbMvWAcxmquxipxBg"></div><script src="https://strava-embeds.com/embed.js"></script>
@@ -121,16 +121,16 @@ execute:
 何かを呪いながら400upして峠近くの本来曲がるべき分岐まで戻りました。写真左から後ろに伸びている舗装路が間違って下ってしまった道で，曲がるべき方向はこの右奥に向かう方向でした。桃園や宜蘭方面とやら，わかりやすい地名を書いてくれたらよかったのですが，何もなかったので間違えました。あまり使われない道なのでしょうか。何か書いてある看板があればそれを見逃した自分を呪う必要がありますが，何も書いていなかったので自分を呪わずにすみました。
 
 ::: {layout-ncol=2}
-![川が青い](/materials/2026-articles/0927_hshinchu/IMG_0734.webp){width=100% fig-align="center"}
+![川は青い](/materials/2026-articles/0927_hshinchu/IMG_0734.webp){width=100% fig-align="center"}
 
 ![道は険しい](/materials/2026-articles/0927_hshinchu/IMG_0735.webp){width=100% fig-align="center"}
 :::
 
 峠付近の分岐からダウンして川沿いまで降りてきました。この川は大漢渓と呼ばれ，はるばる淡水河まで流れていくそうです。川が青くて素晴らしいので，大漢ブルーと名付けました。
 
-![日本で見たことあるこのテイスト](/materials/2026-articles/0927_hshinchu/IMG_0737.webp){width=100% fig-align="center"}
+![日本で見たことあるテイスト](/materials/2026-articles/0927_hshinchu/IMG_0737.webp){width=100% fig-align="center"}
 
-途中から桃園市に入ったのですが，路面状況が悪くなってきました。谷沿いのちょっと砂利が散らばっている一車線の道はなんとなく既視感があります。ここが国道ではなく，県道的な位置づけだからでしょうか？
+途中から桃園市に入ったのですが，路面状況が悪くなってきました。谷沿いのちょっと砂利が散らばっている一車線の道はなんとなく既視感があります。
 
 ![台7に合流する](/materials/2026-articles/0927_hshinchu/IMG_0741.webp){width=100% fig-align="center"}
 

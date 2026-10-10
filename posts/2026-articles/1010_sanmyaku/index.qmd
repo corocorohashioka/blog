@@ -1,0 +1,63 @@
+---
+title: "台湾の中央山脈と道路"
+author: "corocorohashioka"
+date: "2026-10-10"
+categories: [mountain, geodata]
+image: /materials/2026-articles/0926_sample/thumb.jpg
+toc: true
+toc-depth: 3
+lightbox: auto
+draft: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+分水嶺というのは，水が流れてゆく先の川の境界線である。日本では，分水嶺の中でも水の流れる先が日本海・太平洋と変わる境界線を中央分水嶺といって，分水嶺の中でも特に重要視される。台湾も日本と同じ島国であるがゆえに，このように大きく水の行く先を変える分水嶺というものが存在するはずである。つまり，西の台湾海峡と東の太平洋へ水の流れを分かつ分水嶺が存在するはずである。
+
+## 5大山脈と中央分水嶺
+
+
+## 中央分水嶺のプロット
+
+```{r}
+library(sf)
+library(mapview)
+library(leafpop)
+library(htmltools)
+library(htmlwidgets)
+road <- read_sf("materials/shared/taiwan_geo/central_sanmyaku2.gpx", layer = "tracks")
+t <- data.frame(
+  road_name = c("台2",　"竹子山戰備道", "小観音山戰備道", "台2甲(竹子湖路)", "中湖戰備道", "北28(萬渓産業道路)", "農北萬006(烏基産業道路)", "北38(平雙産業道路)/台2丙", "北42(雙坪産業道路)", "農北雙007(雙泰産業道路)",
+                "農北雙007(雙泰産業道路)/宜1(内大渓産業道路)", "台9/台5(蒋渭水高速公路)", "台7丁(雙連埤産業道路)", "台7(北部横貫公路)", "100線林道", "台7甲(中部横貫宜蘭支線)", "台8(中部横貫公路)/ 台14甲(中部横貫霧社支線)", "丹大林道",
+                "台20(南部横貫公路)", "大漢林道", "台9戌/台9", "縣道199",  "縣道199甲", "名称不明", "屏172", "屏156", "縣道200", "台26"),
+  availability = c("通り抜け可能", "通行不可", "通行可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通行可能", "通り抜け可能",
+                   "通行不可", "通り抜け可能", "通り抜け可能", "通行不可", "通り抜け可能", "通行可能", "通り抜け可能", "通行可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能", "通り抜け可能"),
+  lat = c(25.28969, 25.21409, 25.18687, 25.18016, 25.16929, 25.13661, 25.14463, 25.01644, 24.98288, 24.9933, 24.93857, 24.86506, 24.7595, 24.64306, 24.52956, 24.3922, 24.1621, 23.75644, 23.26472, 22.40547, 22.24524, 22.23451, 22.18548, 22.15913, 22.10948, 22.06694, 22.00746, 21.90498),
+  lon = c(121.53966, 121.56368, 121.53955, 121.54497, 121.56281, 121.602629, 121.643103, 121.78549, 121.79465, 121.8473, 121.84397, 121.77545, 121.5903, 121.44502, 121.40168, 121.35327, 121.2881, 121.21904, 120.95796, 120.75875, 120.83561, 120.86432, 120.85819, 120.83992, 120.81829, 120.7941, 120.78458, 120.85506)
+)
+names(t)[1:2] <- c("道路名", "状況")
+passpoint <- st_as_sf(t, coords = c("lon", "lat"), crs = 4326)
+lab_pts  <- lapply(popupTable(st_drop_geometry(passpoint),  feature.id = FALSE), HTML)
+lab_road <- lapply(popupTable(st_drop_geometry(road), feature.id = FALSE), HTML)
+
+m <- mapview(passpoint,
+        layer.name = "道路",
+        legend = TRUE,
+        map.types = "OpenStreetMap",
+        label = lab_pts,
+        popup = FALSE) +
+  mapview(road,
+          layer.name = "中央分水嶺",
+          legend = TRUE,
+          color = "red", lwd = 3,
+          label = FALSE,
+          popup = FALSE)
+
+m@map |>
+  prependContent(tags$style(HTML("
+    .leaflet-tooltip table,
+    .leaflet-popup-content table { font-size: 12px; }
+  ")))
+```
