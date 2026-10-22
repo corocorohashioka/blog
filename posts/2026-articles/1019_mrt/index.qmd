@@ -1,0 +1,19 @@
+---
+title: "記事のタイトル"
+subtitle: "サブタイトル（不要ならこの行を削除）"
+author: "corocorohashioka"
+date: "2026-09-26"
+categories: [mountain]
+image: /materials/2026-articles/0926_sample/thumb.jpg
+image-alt: "一覧に出るサムネイルの説明"
+description: "一覧ページの記事カードに出る短い紹介文。省略すると本文冒頭が使われる。"
+toc: true
+toc-depth: 3
+lightbox: auto
+draft: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
