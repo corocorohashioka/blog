@@ -1,0 +1,29 @@
+---
+title: "GEOSで地理データを操作するときの落とし穴"
+listing:
+  contents: posts
+  feed:
+    type: partial
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+```{r}
+#| include: false
+library(tidyverse)
+```
+
+地理データにはたまにinvalidな状態になっているものがある。特に、ポリゴンデータに問題があることが多く、空間が閉じていないことや、線同士が重なっているといった問題がある。特に、これらの状態になっているデータを読み込んだとき、データ作成者が意図しない形で読みこまれてしまう可能性がある。少しだけ掘り下げたのでメモ程度で記事を書いた。
+
+例として、国土交通省が発行している[「流域界・非集水域データ」](https://nlftp.mlit.go.jp/ksj/gmlold/datalist/gmlold_KsjTmplt-W12.html)を用いる。このデータは、川の流域界がどのように広がっているかを示すポリゴンデータであり、支流レベルで流域界が細かく分割されている。全国データは37778個のポリゴンで成り立っていいるのだが、read_sfで読み込むと、以下のような警告が発生する。
+
+```{r}
+#| warning: !expr 1:5
+library(sf)
+data <- read_sf("blog/materials/2026-articles/1114_geo/W12-52A-2K_WatershedBoundary.shp")
+```
+
