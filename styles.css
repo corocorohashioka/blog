@@ -23,8 +23,9 @@ figcaption {
 
 /* 本文の行末を揃える（両端揃え）
    - 日本語は文字間で調整する
-   - キャプションは中央寄せのままにするため本文の段落だけに適用 */
-#quarto-document-content p {
+   - キャプションは中央寄せのままにするため本文の段落だけに適用
+   - 写真を包む段落（figure 内の p）は除外する。含めると fig-align="center" が効かず左寄りになる */
+#quarto-document-content p:not(figure p) {
   text-align: justify;
   text-justify: inter-character;
 }

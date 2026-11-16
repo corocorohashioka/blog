@@ -1,5 +1,5 @@
 ---
-title: "記事のタイトル"
+title: "台北MRTで見る都市"
 subtitle: "サブタイトル（不要ならこの行を削除）"
 author: "corocorohashioka"
 date: "2026-09-26"
@@ -17,3 +17,276 @@ execute:
   message: false
 ---
 
+```{r}
+#| fig-cap: "台北MRT 路線別の1日あたり乗降客数の推移"
+library(tidyverse)
+library(readxl)
+library(plotly)
+
+# Excel の一時ファイル(~$...)は除外する
+files <- list.files("materials/2026-articles/1019_mrt", pattern = "^[^~].*\\.xlsx$", full.names = TRUE)
+
+mrt_year <- map_dfr(files, function(f) {
+  read_excel(f, sheet = "年平均_全日(日平均)") %>%
+    pivot_longer(-年度, names_to = "駅", values_to = "乗降客数") %>%
+    mutate(路線 = tools::file_path_sans_ext(basename(f)))
+}) %>%
+  mutate(年度 = as.integer(年度)) %>%
+  # 2026年は1〜9月だけなので除く。空白セル(開業前など)も除く
+  filter(年度 <= 2025, !is.na(乗降客数)) %>%
+  group_by(路線, 年度) %>%
+  summarise(乗降客数 = sum(乗降客数), .groups = "drop")
+
+# カーソルを当てた点に出す文字(text)を geom_point に渡し、ggplotly で表示する
+p <- ggplot(mrt_year, aes(x = 年度, y = 乗降客数 / 1e4, colour = 路線, group = 路線)) +
+  geom_line(linewidth = 1) +
+  geom_point(aes(text = paste0(路線, "<br>", 年度, "年：",
+                               format(round(乗降客数), big.mark = ",", trim = TRUE), " 人次/日")),
+             size = 1.5) +
+  scale_x_continuous(breaks = 2015:2025) +
+  scale_colour_manual(values = c(
+    "文湖線" = "#C48C31", "淡水信義線" = "#E3002C", "松山新店線" = "#008659",
+    "中和新蘆線" = "#F8B61C", "板南線" = "#0070BD", "環狀線" = "#FFDB00"
+  )) +
+  expand_limits(y = 0) +
+  labs(x = "年", y = "1日あたり乗降客数（万人次）", colour = "路線") +
+  theme_minimal(base_family = "HiraginoSans-W3")
+
+ggplotly(p, tooltip = "text")
+```
+
+```{r}
+#| fig-cap: "板南線 駅別の1日あたり乗降客数（2015・2019・2025年、台北車站を除く）"
+#| fig-width: 8
+#| fig-height: 5
+bl_year <- read_excel("materials/2026-articles/1019_mrt/板南線.xlsx",
+                      sheet = "年平均_全日(日平均)")
+
+bl_station <- bl_year %>%
+  pivot_longer(-年度, names_to = "駅", values_to = "乗降客数") %>%
+  mutate(年度 = as.integer(年度)) %>%
+  filter(年度 %in% c(2015, 2019, 2025), !is.na(乗降客数)) %>%
+  # 「頂埔_BL01」→「頂埔」にして、横軸は路線上の並び順にする
+  mutate(駅 = factor(str_remove(駅, "_BL\\d+$"),
+                    levels = str_remove(names(bl_year)[-1], "_BL\\d+$")),
+         年度 = factor(年度)) %>%
+  # 台北車站は突出して他駅の変化が見えにくくなるので除く
+  filter(駅 != "台北車站") %>%
+  droplevels()
+
+p <- ggplot(bl_station, aes(x = 駅, y = 乗降客数 / 1e4, colour = 年度, group = 年度)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(aes(text = paste0(駅, "<br>", 年度, "年：",
+                               format(round(乗降客数), big.mark = ",", trim = TRUE), " 人次/日")),
+             size = 1.5) +
+  scale_colour_manual(values = c("2015" = "#9ABAD9", "2019" = "#4A7FB5", "2025" = "#0B2E59")) +
+  expand_limits(y = 0) +
+  labs(x = "駅", y = "1日あたり乗降客数（万人次）", colour = "年") +
+  theme_minimal(base_family = "HiraginoSans-W3") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplotly(p, tooltip = "text")
+```
+
+```{r}
+# 路線ごとに駅別の1日あたり乗降客数を描く(板南線と同じ形式)
+plot_station <- function(line_name) {
+  line_year <- read_excel(
+    file.path("materials/2026-articles/1019_mrt", paste0(line_name, ".xlsx")),
+    sheet = "年平均_全日(日平均)"
+  )
+
+  p <- line_year %>%
+    pivot_longer(-年度, names_to = "駅", values_to = "乗降客数") %>%
+    mutate(年度 = as.integer(年度)) %>%
+    filter(年度 %in% c(2015, 2019, 2025), !is.na(乗降客数)) %>%
+    mutate(
+      # 支線(蘆洲方面 O50〜O54、新北投 R22A)は本線と線をつながない
+      区間 = if_else(str_detect(駅, "_O5\\d$|_R22A$"), "支線", "本線"),
+      駅 = factor(str_remove(駅, "_[A-Z]+\\d+A?$"),
+                  levels = str_remove(names(line_year)[-1], "_[A-Z]+\\d+A?$")),
+      年度 = factor(年度)
+    ) %>%
+    # 台北車站は突出して他駅の変化が見えにくくなるので除く
+    filter(駅 != "台北車站") %>%
+    droplevels() %>%
+    ggplot(aes(x = 駅, y = 乗降客数 / 1e4, colour = 年度,
+               group = interaction(年度, 区間))) +
+    geom_line(linewidth = 0.8) +
+    geom_point(aes(text = paste0(駅, "<br>", 年度, "年：",
+                                 format(round(乗降客数), big.mark = ",", trim = TRUE), " 人次/日")),
+               size = 1.5) +
+    scale_colour_manual(values = c("2015" = "#9ABAD9", "2019" = "#4A7FB5", "2025" = "#0B2E59")) +
+    expand_limits(y = 0) +
+    labs(x = "駅", y = "1日あたり乗降客数（万人次）", colour = "年") +
+    theme_minimal(base_family = "HiraginoSans-W3") +
+    # 駅名は繁体字(唭など)を含むので、軸ラベルだけ PingFang TC で描く
+    theme(axis.text.x = element_text(family = "PingFang TC", angle = 90, hjust = 1, vjust = 0.5))
+
+  ggplotly(p, tooltip = "text")
+}
+```
+
+```{r}
+#| fig-cap: "中和新蘆線 駅別の1日あたり乗降客数（2015・2019・2025年）"
+#| fig-width: 8
+#| fig-height: 5
+plot_station("中和新蘆線")
+```
+
+```{r}
+#| fig-cap: "淡水信義線 駅別の1日あたり乗降客数（2015・2019・2025年、台北車站を除く）"
+#| fig-width: 8
+#| fig-height: 5
+plot_station("淡水信義線")
+```
+
+```{r}
+#| fig-cap: "文湖線 駅別の1日あたり乗降客数（2015・2019・2025年）"
+#| fig-width: 8
+#| fig-height: 5
+plot_station("文湖線")
+```
+
+```{r}
+# 駅別に「後の年の値 / 前の年の値」を描く
+# 比が 0.3〜2 の範囲外になる駅は外れ値として除く
+plot_ratio <- function(line_name) {
+  line_year <- read_excel(
+    file.path("materials/2026-articles/1019_mrt", paste0(line_name, ".xlsx")),
+    sheet = "年平均_全日(日平均)"
+  )
+
+  p <- line_year %>%
+    pivot_longer(-年度, names_to = "駅", values_to = "乗降客数") %>%
+    filter(年度 %in% c("2015", "2019", "2025")) %>%
+    pivot_wider(names_from = 年度, values_from = 乗降客数) %>%
+    mutate(`2019/2015` = `2019` / `2015`,
+           `2025/2019` = `2025` / `2019`) %>%
+    filter(between(`2019/2015`, 0.3, 2), between(`2025/2019`, 0.3, 2)) %>%
+    pivot_longer(c(`2019/2015`, `2025/2019`), names_to = "比", values_to = "値") %>%
+    mutate(
+      # 支線(蘆洲方面 O50〜O54、新北投 R22A、小碧潭 G03A)は本線と線をつながない
+      区間 = if_else(str_detect(駅, "_O5\\d$|_[A-Z]+\\d+A$"), "支線", "本線"),
+      駅 = factor(str_remove(駅, "_[A-Z]+\\d+A?$"),
+                  levels = str_remove(names(line_year)[-1], "_[A-Z]+\\d+A?$"))
+    ) %>%
+    droplevels() %>%
+    ggplot(aes(x = 駅, y = 値, colour = 比, group = interaction(比, 区間))) +
+    geom_hline(yintercept = 1, colour = "grey50", linetype = "dashed") +
+    geom_line(linewidth = 0.8) +
+    geom_point(aes(text = paste0(駅, "<br>", 比, "：", round(値, 2))), size = 1.5) +
+    scale_colour_manual(values = c("2019/2015" = "#9ABAD9", "2025/2019" = "#0B2E59")) +
+    coord_cartesian(ylim = c(0.3, 2)) +
+    labs(x = "駅", y = "乗降客数の比", colour = NULL) +
+    theme_minimal(base_family = "HiraginoSans-W3") +
+    # 駅名は繁体字(唭など)を含むので、軸ラベルだけ PingFang TC で描く
+    theme(axis.text.x = element_text(family = "PingFang TC", angle = 90, hjust = 1, vjust = 0.5))
+
+  ggplotly(p, tooltip = "text")
+}
+```
+
+```{r}
+#| fig-cap: "板南線 駅別の乗降客数の比（2019/2015・2025/2019、1日あたり）"
+#| fig-width: 8
+#| fig-height: 5
+plot_ratio("板南線")
+```
+
+```{r}
+#| fig-cap: "中和新蘆線 駅別の乗降客数の比（2019/2015・2025/2019、1日あたり）"
+#| fig-width: 8
+#| fig-height: 5
+plot_ratio("中和新蘆線")
+```
+
+```{r}
+#| fig-cap: "淡水信義線 駅別の乗降客数の比（2019/2015・2025/2019、1日あたり）"
+#| fig-width: 8
+#| fig-height: 5
+plot_ratio("淡水信義線")
+```
+
+```{r}
+#| fig-cap: "文湖線 駅別の乗降客数の比（2019/2015・2025/2019、1日あたり）"
+#| fig-width: 8
+#| fig-height: 5
+plot_ratio("文湖線")
+```
+
+```{r}
+#| fig-cap: "松山新店線 駅別の乗降客数の比（2019/2015・2025/2019、1日あたり）"
+#| fig-width: 8
+#| fig-height: 5
+plot_ratio("松山新店線")
+```
+
+```{r}
+#| output: false
+library(sf)
+library(mapview)
+```
+
+```{r}
+# 駅の位置は「臺北捷運車站出入口座標」(data.taipei) の出入口座標を駅ごとに平均して作る
+exits <- read_csv("materials/2026-articles/1019_mrt/mrt_exits.csv", show_col_types = FALSE)
+
+station_geo <- exits %>%
+  # 「頂埔站出口1」→「頂埔」、「台北車站M1」→「台北車站」
+  mutate(駅 = str_remove(出入口名稱, "站出口.*$|M\\d+$")) %>%
+  group_by(駅) %>%
+  summarise(経度 = mean(經度), 緯度 = mean(緯度))
+
+station_long <- map_dfr(files, function(f) {
+  read_excel(f, sheet = "年平均_全日(日平均)") %>%
+    pivot_longer(-年度, names_to = "駅", values_to = "乗降客数") %>%
+    mutate(路線 = tools::file_path_sans_ext(basename(f)))
+}) %>%
+  mutate(駅 = str_remove(駅, "_[A-Z]+\\d+A?$"))
+
+station_line <- station_long %>%
+  distinct(駅, 路線) %>%
+  group_by(駅) %>%
+  summarise(路線 = paste(路線, collapse = "・"))
+
+# 乗換駅は各路線に同じ値(駅全体の進出人次)で入っているので、駅名で1つにまとめる
+# ただし板橋は環狀線(Y16)が別集計で値が小さいので、路線間で最大の値を使う
+station_ratio <- station_long %>%
+  filter(年度 %in% c("2015", "2019", "2025"), !is.na(乗降客数)) %>%
+  group_by(駅, 年度) %>%
+  summarise(乗降客数 = max(乗降客数), .groups = "drop") %>%
+  pivot_wider(names_from = 年度, values_from = 乗降客数) %>%
+  left_join(station_line, by = "駅") %>%
+  mutate(`2019/2015` = round(`2019` / `2015`, 2),
+         `2025/2019` = round(`2025` / `2019`, 2),
+         # ポップアップに出す1日あたりの人数は整数に丸める
+         across(c(`2015`, `2019`, `2025`), round)) %>%
+  inner_join(station_geo, by = "駅") %>%
+  st_as_sf(coords = c("経度", "緯度"), crs = 4326)
+
+# 比が1を超えれば赤、1以下なら青で塗る
+map_ratio <- function(ratio) {
+  d <- station_ratio %>%
+    filter(!is.na(.data[[ratio]])) %>%
+    mutate(判定 = factor(if_else(.data[[ratio]] > 1, "増加(>1)", "減少(≤1)"),
+                         levels = c("増加(>1)", "減少(≤1)")))
+  mapview(
+    d,
+    zcol = "判定",
+    col.regions = c("#D7301F", "#2166AC"),
+    color = "white",
+    cex = 6,
+    alpha.regions = 0.9,
+    label = paste0(d$駅, "：", d[[ratio]]),
+    popup = leafpop::popupTable(d, zcol = c("駅", "路線", "2015", "2019", "2025",
+                                            "2019/2015", "2025/2019"), row.numbers = FALSE,
+                                feature.id = FALSE),
+    # レイヤー名に「/」があると mapview が一時ファイルを作れないので「÷」にする
+    layer.name = str_replace(ratio, "/", "÷"),
+    map.types = "OpenStreetMap"
+  )
+}
+
+map_ratio("2019/2015") + map_ratio("2025/2019")
+```
