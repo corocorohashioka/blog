@@ -11,19 +11,115 @@ listing:
   filter-ui: false
 page-layout: full
 title-block-banner: true
+execute:
+  error: true
 ---
 ```{r}
 #| include: false
 library(tidyverse)
 ```
 
-地理データにはたまにinvalidな状態になっているものがある。特に、ポリゴンデータに問題があることが多く、空間が閉じていないことや、線同士が重なっているといった問題がある。特に、これらの状態になっているデータを読み込んだとき、データ作成者が意図しない形で読みこまれてしまう可能性がある。少しだけ掘り下げたのでメモ程度で記事を書いた。
+地理データにはたまにinvalidな状態になっているものがある。特に、ポリゴンデータに問題があることが多く、空間が閉じていないことや、線同士が重なっているといった問題がある。特に、これらの状態になっているデータを読み込んだとき、データ作成者が意図しない形で読みこまれてしまう可能性がある。この問題には、バックで何のライブラリを使っているかにも依存したりするので、少しだけ掘り下げたのでメモ程度で記事を書いた。
 
 例として、国土交通省が発行している[「流域界・非集水域データ」](https://nlftp.mlit.go.jp/ksj/gmlold/datalist/gmlold_KsjTmplt-W12.html)を用いる。このデータは、川の流域界がどのように広がっているかを示すポリゴンデータであり、支流レベルで流域界が細かく分割されている。全国データは37778個のポリゴンで成り立っていいるのだが、read_sfで読み込むと、以下のような警告が発生する。
 
 ```{r}
-#| warning: !expr 1:5
+#| warning: !expr 1:2
 library(sf)
-data <- read_sf("blog/materials/2026-articles/1114_geo/W12-52A-2K_WatershedBoundary.shp")
+n_warn <- 0
+data <- read_sf("materials/2026-articles/1114_geo/W12-52A-2K_WatershedBoundary.shp")
 ```
+
+このような警告が53個出てきます。これは、ポリゴンが閉じた輪っかのようになっていないことに起因するエラーです。実際に1つのポリゴンを見てみましょう。このポリゴンデータのcrsは4612です。
+
+```{r}
+data <- st_set_crs(data, 4612) %>%
+  slice(15491)
+library(mapview)
+mapview(data)
+```
+
+2つの流域ポリゴンが何らかのエラーでくっついた状態になっている。大体始点と終点が同一でないことに起因するので、始点と終点、そして補完された部分を図示する。
+
+```{r}
+xy <- st_coordinates(data)[, 1:2]
+n  <- nrow(xy)
+gap <- st_sfc(st_linestring(xy[c(n, 1), ]), crs = 4612)
+pts <- st_sfc(st_multipoint(xy[c(1, n), ]), crs = 4612)
+
+mapview(data) +
+  mapview(gap, color = "red", lwd = 3) +
+  mapview(pts, col.regions = "orange")
+```
+
+こう見ると、それぞれのポリゴンに始点と終点があり、その2つが同一時点ではないので、勝手にその2点を結ぶ線が補完されている。では、この線の部分に交差するポリゴンの交差判定はどのようになるのだろうか？
+
+```{r}
+xy <- rbind(
+  c(139.74250, 36.68882),
+  c(139.76168, 36.68882),
+  c(139.76168, 36.70699),
+  c(139.74250, 36.70699),
+  c(139.74250, 36.68882)
+)
+sq <- st_sf(id = 1, geometry = st_sfc(st_polygon(list(xy)), crs = 4612))
+mapview(data) +
+  mapview(sq, col.regions = "red")
+st_intersects(data, sq, sparse = FALSE) 
+```
+
+実際に交差する長方形のようなポリゴンを用意し、invalidなポリゴンとの交差判定を行った。この場合は、エラーが吐かれる。地理座標系が設定されているオブジェクトで計算に用いられるs2ライブラリは、計算を実行する前にポリゴンが不正かどうかをチェックする。
+
+このような不正ポリゴンに対してはst_make_validで修復を行うことで対処することが多い。
+
+```{r}
+data_v <- st_make_valid(data)
+mapview(data_v)
+```
+
+st_make_validはかなり有効で、アルゴリズムが簡単に解決して、「扱いやすい」かたちに直してくれる。
+しかし，このようないびつなかたちになってしまうは欠点であるが。
+
+```{r}
+st_intersects(data_v, sq, sparse = FALSE) 
+```
+
+しかし、この場合でもs2ライブラリによるst_intersectsは不正を検知する。これはポリゴン内部で線が交差している状態になっているからである。ただし、GEOSライブラリを用いるとこの検知がないことが厄介になる。
+
+```{r}
+sf_use_s2(FALSE)
+st_intersects(data_v, sq, sparse = FALSE) 
+```
+
+st_use_s2をFALSEにすることで、GEOSライブラリで計算を行ったが、この場合は不正が検知されずかつ交差した判定が出る。GEOSライブラリはポリゴンが閉じてさえいれば判定が進むのでこのような自己交差不正ポリゴンでも判定が行われるのである。
+
+このような事態を防ぐ1つの方法は不正ポリゴンを特定してst_make_validで処理を行う前に、不正ポリゴンのかたちを確認することが考えられる。
+
+しかし、大量の不正ポリゴンでは人力での確認に限界がある。1つの方法は、GEOSのst_make_validを用いることである。
+```{r}
+sf_use_s2(FALSE)
+data_v2 <- st_make_valid(data)
+```
+
+GEOSライブラリのst_make_validは、元のデータの始点と終点が一致していないと作動しないようである。この場合はこの先のステップに進めないので、間違ったまま分析が進むことが基本的にはない。GEOSのst_intersectsの挙動を考えると、GEOSライブラリでは、sf_make_validで最初の不正を検知するので後のコマンドでは不正が検知されないことになる。
+
+もし、勝手に生成されてしまう線さえなければ良いという思想ならば、ポリゴンを線に分解して再構築する方法を取ることで、うまくいく。
+
+```{r}
+sf_use_s2(FALSE)
+data_v3 <- data %>%
+  st_cast("LINESTRING") %>%   # ポリゴンを線に分解
+  st_cast("POLYGON") %>%      # 線からポリゴンを作り直す（このとき始点を末尾に足して輪を閉じる）
+  st_make_valid()             # 残った自己交差などを GEOS で修復
+sf_use_s2(TRUE)
+mapview(data_v3)
+```
+
+Invalidなpolygonによるエラーはst_make_validで簡単に回避はできるが、その回避が正しいことは保証しない。AIはプロンプト次第では丁寧に処理を行ってくれるが、かなりのケースであの手この手を使ってエラーを回避をしているものの、適切でない場合があり得る。このようなケースに注意したい。
+
+なお、s2とGEOSでどちらがどのような不正ポリゴン検知をするかは結構ややこしい話であるが、以下を参考にされたい。
+
+sf 公式[「Spherical geometry in sf using s2geometry」](https://cran.r-project.org/web/packages/sf/vignettes/sf7.html)
+
+[Spherical Geometries](https://r-spatial.org/book/04-Spherical.html)
 

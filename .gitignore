@@ -34,6 +34,7 @@
 *.cpg
 *.sbn
 *.sbx
+*.xml
 
 # 運用手順（手元のみ・GitHub には置かない）
 README.md
